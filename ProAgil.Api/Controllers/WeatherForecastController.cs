@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ProAgil.Api.Model;
 
 namespace ProAgil.Api.Controllers
 {
@@ -24,14 +25,16 @@ namespace ProAgil.Api.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
-        {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+        public IEnumerable<Evento> Get()
+        {            
+            return Enumerable.Range(1, 10).Select(index => new Evento
             {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
+                EventoId = index,
+                Local = "São João da Boa Vista",
+                DataEvento = DateTime.Now.AddDays(2).ToString("dd/MM/yyyy HH:MM"),
+                Tema = "Foda-se",
+                QtdPessoas = 25,
+                Lote = "Primeiro Lote"
             })
             .ToArray();
         }
