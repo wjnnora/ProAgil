@@ -26,7 +26,18 @@ namespace ProAgil.Api.Controllers
 
         [HttpGet]
         public IEnumerable<Evento> Get()
-        {            
+        {                        
+            return GetEventos();
+        }        
+
+        [HttpGet("{id}")]
+        public IEnumerable<Evento> Get(int id)
+        {
+            return GetEventos().Where(x => x.EventoId == id).ToList();
+        }        
+
+        private IEnumerable<Evento> GetEventos()
+        {
             return Enumerable.Range(1, 10).Select(index => new Evento
             {
                 EventoId = index,
