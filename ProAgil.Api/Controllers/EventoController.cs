@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ProAgil.Api.Data;
 using ProAgil.Api.Model;
@@ -24,26 +25,28 @@ namespace ProAgil.Api.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {            
             try
-            {
-                return Ok(context.Eventos.ToList());
+            {                
+                var resultado = await context.Eventos.ToListAsync();
+                return Ok(resultado);
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor");
             }
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(int? id)
+        public async Task<IActionResult> Get(int? id)
         {   
             try
             {
                 if (id.HasValue && id.Value > 0)
                 {
-                    return Ok(context.Eventos.FirstOrDefault(x => x.EventoId == id.Value));
+                    var result = await context.Eventos.FirstOrDefaultAsync(x => x.EventoId == id.Value);                    
+                    return Ok(result);
                 }
                 throw new ArgumentException("Informe um id válido maior que 0.");
             }
