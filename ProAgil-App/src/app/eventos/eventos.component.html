@@ -1,0 +1,12 @@
+<div class="container">
+  <h1>Teste de exibição de eventos.</h1>
+  <hr />
+  <ul *ngFor="let evento of eventos">
+    <li><span>Id do evento:</span> {{evento.eventoId}}</li>
+    <li><span>Local do evento:</span> {{evento.local}}</li>
+    <li><span>Data do evento:</span> {{evento.dataEvento}}</li>
+    <li><span>Tema do evento:</span> {{evento.tema}}</li>
+    <li><span>Quantidade de pessoas:</span> {{evento.qtdPessoas}}</li>
+    <li><span>Lote do evento:</span> {{evento.lote}}</li>
+  </ul>
+</div>
