@@ -1,12 +1,38 @@
-<div class="container">
-  <h1>Teste de exibição de eventos.</h1>
+<div class="container">  
+  <h3>ProAgil Eventos</h3>
   <hr />
-  <ul *ngFor="let evento of eventos">
-    <li><span>Id do evento:</span> {{evento.eventoId}}</li>
-    <li><span>Local do evento:</span> {{evento.local}}</li>
-    <li><span>Data do evento:</span> {{evento.dataEvento}}</li>
-    <li><span>Tema do evento:</span> {{evento.tema}}</li>
-    <li><span>Quantidade de pessoas:</span> {{evento.qtdPessoas}}</li>
-    <li><span>Lote do evento:</span> {{evento.lote}}</li>
-  </ul>
+  <form action="">
+    <div class="row">
+      <div class="col mb-2">
+        <input type="text" class="form-control" placeholder="Buscar">
+      </div>
+      <div class="col">
+        <button class="btn btn-outline-success">Buscar</button>
+      </div>
+    </div>
+  </form>
+  <table class="table table-striped table-responsive">
+    <thead class="table-dark">
+      <tr>
+        <th class="align-self-center">#</th>
+        <th class="text-center">Tema</th>
+        <th class="text-center">Local</th>
+        <th class="text-center">Data</th>
+        <th class="text-center">Vagas</th>
+        <th class="text-center">Lote</th>
+        <th class="text-center">Opções</th>
+      </tr>    
+    </thead>
+    <tbody>
+      <tr *ngFor="let evento of eventos">
+        <td class="text-center">{{evento.eventoId}}</td>
+        <td class="text-center">{{evento.local}}</td>
+        <td class="text-center">{{evento.dataEvento}}</td>
+        <td class="text-center">{{evento.tema}}</td>
+        <td class="text-center">{{evento.qtdPessoas}}</td>
+        <td class="text-center">{{evento.lote}}</td>
+        <td class="align-middle text-center"><button type="button" class="btn btn-primary">Opção</button></td>
+      </tr>
+    </tbody>
+  </table>
 </div>
