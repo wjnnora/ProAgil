@@ -8,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class EventosComponent implements OnInit {
 
-  eventos: any;
+  eventos: any = [];
   url: string = 'http://localhost:5000/Evento/';
     
 
