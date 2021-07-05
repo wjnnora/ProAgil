@@ -5,4 +5,5 @@
     tema: string,
     qtdPessoas: number,
     lote: string
+    imagePath: string
 }
