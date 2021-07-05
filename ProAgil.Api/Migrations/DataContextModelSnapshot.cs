@@ -24,6 +24,9 @@ namespace ProAgil.Api.Migrations
                     b.Property<string>("DataEvento")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Local")
                         .HasColumnType("TEXT");
 
