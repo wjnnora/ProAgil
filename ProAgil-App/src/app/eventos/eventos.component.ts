@@ -11,6 +11,8 @@ export class EventosComponent implements OnInit {
 
   eventos: any = [];  
   url: string = 'http://localhost:5000/Evento/';    
+  showImg = false;
+  filtroBuscar = '';
 
   constructor(private http: HttpClient, private eventoService: EventoService) { }
 
@@ -25,4 +27,8 @@ export class EventosComponent implements OnInit {
       console.log(error);
     });   
   }  
+
+  getExibirImagem(){
+    this.showImg = !this.showImg;
+  }
 }
