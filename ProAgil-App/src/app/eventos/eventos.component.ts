@@ -1,6 +1,8 @@
+import { Evento } from './../model/evento.model';
 import { EventoService } from './../service/evento.service';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+
 
 @Component({
   selector: 'app-eventos',
@@ -10,9 +12,17 @@ import { Component, OnInit } from '@angular/core';
 export class EventosComponent implements OnInit {
 
   eventos: any = [];  
-  url: string = 'http://localhost:5000/Evento/';    
-  showImg = false;
-  filtroBuscar = '';
+  eventosFiltrados: any = [];  
+  showImg = false;  
+  _filtroBuscar: string = '';
+
+  get filtroBuscar(): string{
+    return this._filtroBuscar.toLocaleLowerCase();
+  }
+  set filtroBuscar(value: string){
+    this._filtroBuscar = value;
+    this.eventosFiltrados = this.filtroBuscar ? this.FiltrarEventos(this.filtroBuscar) : this.eventos;
+  }
 
   constructor(private http: HttpClient, private eventoService: EventoService) { }
 
@@ -30,5 +40,12 @@ export class EventosComponent implements OnInit {
 
   getExibirImagem(){
     this.showImg = !this.showImg;
+  }
+
+  FiltrarEventos(FiltrarPor: string): Evento{
+    console.log("Passou por aqui.");
+    return this.eventos.filter(
+      (evento: Evento) => evento.tema.toLocaleLowerCase()
+    );
   }
 }

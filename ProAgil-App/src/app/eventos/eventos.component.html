@@ -1,7 +1,7 @@
 <div class="container">  
   <h3>ProAgil Eventos</h3>
   <hr />
-  <form action="">
+  <div action="">
     <div class="row">
       <div class="col mb-2">
         <input [(ngModel)]="filtroBuscar" type="text" class="form-control" placeholder="Buscar">
@@ -11,7 +11,7 @@
         <button class="btn btn-outline-success">Buscar</button>
       </div>
     </div>
-  </form>
+  </div>
   <table class="table table-striped table-responsive">
     <thead class="table-dark">
       <tr>
@@ -28,7 +28,7 @@
       </tr>    
     </thead>
     <tbody *ngIf="eventos && eventos.length">
-      <tr *ngFor="let evento of eventos">
+      <tr *ngFor="let evento of eventosFiltrados">
         <td class="text-center">
           <img *ngIf="showImg" src="http://localhost:5000/{{evento.imagePath}}" [style.width.px]="50" [style.margin.px]="2"/>
         </td>
