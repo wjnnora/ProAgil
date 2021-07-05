@@ -13,11 +13,11 @@ export class EventosComponent implements OnInit {
 
   eventos: any = [];  
   eventosFiltrados: any = [];  
-  showImg = false;  
+  showImg = true;  
   _filtroBuscar: string = '';
 
   get filtroBuscar(): string{
-    return this._filtroBuscar.toLocaleLowerCase();
+    return this._filtroBuscar;
   }
   set filtroBuscar(value: string){
     this._filtroBuscar = value;
@@ -32,7 +32,8 @@ export class EventosComponent implements OnInit {
 
   getEventos(){
     this.eventoService.getAllEventos().subscribe(response => {
-      this.eventos = response;
+      this.eventos = response;    
+      this.eventosFiltrados = response;  
     }, error => {
       console.log(error);
     });   
@@ -42,10 +43,10 @@ export class EventosComponent implements OnInit {
     this.showImg = !this.showImg;
   }
 
-  FiltrarEventos(FiltrarPor: string): Evento{
-    console.log("Passou por aqui.");
+  FiltrarEventos(filtrarPor: string): Evento{
+    filtrarPor = filtrarPor.toLocaleLowerCase();    
     return this.eventos.filter(
-      (evento: Evento) => evento.tema.toLocaleLowerCase()
+      (evento: Evento) => evento.tema.toLocaleLowerCase().indexOf(filtrarPor) !== -1
     );
   }
 }
