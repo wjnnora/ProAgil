@@ -6,8 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using ProAgil.Api.Data;
-using ProAgil.Api.Model;
+using ProAgil.Repository;
 
 namespace ProAgil.Api.Controllers
 {
@@ -16,9 +15,9 @@ namespace ProAgil.Api.Controllers
     public class EventoController : ControllerBase
     { 
         private readonly ILogger<EventoController> _logger;
-        private readonly DataContext context;   
+        private readonly EventoContext context;   
 
-        public EventoController(ILogger<EventoController> logger, DataContext context)
+        public EventoController(ILogger<EventoController> logger, EventoContext context)
         {
             _logger = logger;
             this.context = context;
@@ -45,7 +44,7 @@ namespace ProAgil.Api.Controllers
             {
                 if (id.HasValue && id.Value > 0)
                 {
-                    var result = await context.Eventos.FirstOrDefaultAsync(x => x.EventoId == id.Value);                    
+                    var result = await context.Eventos.FirstOrDefaultAsync(x => x.Id == id.Value);                    
                     return Ok(result);
                 }
                 throw new ArgumentException("Informe um id válido maior que 0.");
