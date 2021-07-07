@@ -1,0 +1,44 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using ProAgil.Domain;
+using ProAgil.Repository.Interfaces;
+
+namespace ProAgil.Repository
+{
+    public class RedesSociaisRepository: GenericRepository<RedeSocial>, IRedesSociaisRepository
+    {
+        public RedesSociaisRepository(EventoContext context): base(context)
+        {
+            
+        }
+
+        public async Task<IEnumerable<RedeSocial>> GetAllRedesSociaisAsync()
+        {
+            IQueryable<RedeSocial> query = _context.RedesSociais
+                .Include(rs => rs.Palestrante)
+                .Include(e => e.Evento);
+
+            return await query.OrderBy(x => x.Nome).ToArrayAsync();
+        }
+
+        public async Task<RedeSocial> GetRedeSocialByIdAsync(int id)
+        {
+            IQueryable<RedeSocial> query = _context.RedesSociais
+                .Include(rs => rs.Palestrante)
+                .Include(e => e.Evento);
+
+            return await query.FirstOrDefaultAsync(rs => rs.Id == id);
+        }
+
+        public async Task<RedeSocial> GetRedeSocialByNomeAsync(string nome)
+        {
+            IQueryable<RedeSocial> query = _context.RedesSociais
+                .Include(rs => rs.Palestrante)
+                .Include(e => e.Evento);
+
+            return await query.FirstOrDefaultAsync(rs => rs.Nome.Contains(nome));
+        }
+    }
+}
