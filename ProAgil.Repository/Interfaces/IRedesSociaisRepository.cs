@@ -6,8 +6,8 @@ namespace ProAgil.Repository.Interfaces
 {
     public interface IRedesSociaisRepository
     {
-         Task<RedeSocial> GetRedeSocialByIdAsync();
-         Task<RedeSocial> GetRedeSocialByNameAsync();
+         Task<RedeSocial> GetRedeSocialByIdAsync(int id);
+         Task<RedeSocial> GetRedeSocialByNomeAsync(string nome);
          Task<IEnumerable<RedeSocial>> GetAllRedesSociaisAsync();
     }
 }
