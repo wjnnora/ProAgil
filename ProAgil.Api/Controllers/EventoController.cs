@@ -15,13 +15,11 @@ namespace ProAgil.Api.Controllers
     [ApiController]
     [Route("api/[controller]")]
     public class EventoController : ControllerBase
-    {
-        private readonly ILogger<EventoController> _logger;        
+    {        
         private IEventoRepository _eventoRepository;
 
-        public EventoController(ILogger<EventoController> logger, IEventoRepository eventoRepository)
-        {
-            _logger = logger;
+        public EventoController(IEventoRepository eventoRepository)
+        {   
             _eventoRepository = eventoRepository;
         }
 
