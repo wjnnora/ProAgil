@@ -63,13 +63,33 @@ namespace ProAgil.Api.Controllers
                 }
                 return NotFound();
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 
-        [HttpPut]
+        [HttpPost]
+        public async Task<IActionResult> Post(Palestrante palestrante)
+        {
+            try
+            {
+                _palestranteRepository.Insert(palestrante);
+
+                if (await _palestranteRepository.SaveChangesAsync())
+                {
+                    return Created($"api/palestrante/{palestrante.Id}", palestrante);
+                }
+
+                return BadRequest();
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+            }
+        }
+
+        [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, Palestrante palestrante)
         {
             try
