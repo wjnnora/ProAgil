@@ -6,29 +6,31 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using ProAgil.Domain;
 using ProAgil.Repository;
+using ProAgil.Repository.Interfaces;
 
 namespace ProAgil.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class EventoController : ControllerBase
-    { 
-        private readonly ILogger<EventoController> _logger;
-        private readonly EventoContext context;   
+    {
+        private readonly ILogger<EventoController> _logger;        
+        private IEventoRepository _eventoRepository;
 
-        public EventoController(ILogger<EventoController> logger, EventoContext context)
+        public EventoController(ILogger<EventoController> logger, IEventoRepository eventoRepository)
         {
             _logger = logger;
-            this.context = context;
+            _eventoRepository = eventoRepository;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
-        {            
+        {
             try
-            {                
-                var resultado = await context.Eventos.ToListAsync();
+            {
+                var resultado = await _eventoRepository.GetAllEventosAsync();
                 return Ok(resultado);
             }
             catch (Exception)
@@ -38,25 +40,104 @@ namespace ProAgil.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int? id)
-        {   
+        public async Task<IActionResult> Get(int id)
+        {
             try
             {
-                if (id.HasValue && id.Value > 0)
-                {
-                    var result = await context.Eventos.FirstOrDefaultAsync(x => x.Id == id.Value);                    
-                    return Ok(result);
-                }
-                throw new ArgumentException("Informe um id válido maior que 0.");
-            }
-            catch(ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
+                var result = await _eventoRepository.GetEventoByIdAsync(id);
+                return Ok(result);
             }
             catch (Exception ex)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-        }        
+        }
+
+        [HttpGet("getByTema/{Tema}")]
+        public async Task<IActionResult> Get(string tema)
+        {
+            try
+            {
+                var result = await _eventoRepository.GetEventosByTemaAsync(tema);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post(Evento evento)
+        {
+            try
+            {
+                _eventoRepository.Insert(evento);
+
+                if (await _eventoRepository.SaveChangesAsync())
+                {
+                    return Created($"/api/evento/{evento.Id}", evento);
+                }
+
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Put(int id, Evento evento)
+        {
+            try
+            {
+                if (await _eventoRepository.Exists(id))
+                {
+                    _eventoRepository.Update(evento);
+
+                    if (await _eventoRepository.SaveChangesAsync())
+                    {
+                        return Created($"/api/evento/{evento.Id}", evento);
+                    }
+
+                    throw new Exception();
+                }
+
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                Evento evento = await _eventoRepository.GetEventoByIdAsync(id);
+                if (evento != null)
+                {
+                    _eventoRepository.Delete(evento);
+
+                    if (await _eventoRepository.SaveChangesAsync())
+                    {
+                        return Created($"/api/evento/{evento.Id}", evento);
+                    }
+
+                    throw new Exception();
+                }
+
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+
     }
 }
