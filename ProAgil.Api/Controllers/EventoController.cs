@@ -28,8 +28,8 @@ namespace ProAgil.Api.Controllers
         {
             try
             {
-                var resultado = await _eventoRepository.GetAllEventosAsync();
-                return Ok(resultado);
+                IEnumerable<Evento> eventos = await _eventoRepository.GetAllEventosAsync();
+                return Ok(eventos);
             }
             catch (Exception)
             {
@@ -42,8 +42,8 @@ namespace ProAgil.Api.Controllers
         {
             try
             {
-                var result = await _eventoRepository.GetEventoByIdAsync(id);
-                return Ok(result);
+                Evento evento = await _eventoRepository.GetEventoByIdAsync(id);
+                return Ok(evento);
             }
             catch (Exception ex)
             {
@@ -56,8 +56,8 @@ namespace ProAgil.Api.Controllers
         {
             try
             {
-                var result = await _eventoRepository.GetEventosByTemaAsync(tema);
-                return Ok(result);
+                Evento evento = await _eventoRepository.GetEventosByTemaAsync(tema);
+                return Ok(evento);
             }
             catch (Exception ex)
             {
