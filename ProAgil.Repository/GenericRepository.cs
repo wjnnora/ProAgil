@@ -34,7 +34,7 @@ namespace ProAgil.Repository
         /// </summary>        
         /// <param name="Entity">The entity that will be updated.</param>
         public void Update(T Entity)
-        {
+        {            
             _context.Update(Entity);
         }
 
@@ -47,7 +47,11 @@ namespace ProAgil.Repository
         public async Task<bool> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync() > 0;
-        }
+        }        
 
+        public async Task<bool> Exists(int id)
+        {            
+            return await _context.Set<T>().FindAsync(id) != null;
+        }        
     }
 }
