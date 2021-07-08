@@ -51,7 +51,7 @@ namespace ProAgil.Api.Controllers
         }
 
         [HttpGet]    
-        [Route("api/evento/getByName/{nome}")]    
+        [Route("getByName/{nome}")]    
         public async Task<IActionResult> Get(string nome)
         {
             try
@@ -70,19 +70,43 @@ namespace ProAgil.Api.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Put(int id, Palestrante model)
+        public async Task<IActionResult> Put(int id, Palestrante palestrante)
         {
             try
             {
                 if (await _palestranteRepository.Exists(id))
                 {
-                    _palestranteRepository.Update(model);
+                    _palestranteRepository.Update(palestrante);
 
                     if (await _palestranteRepository.SaveChangesAsync())
                     {
-                        return Created($"/api/palestrante/{model.Id}", model);
+                        return Created($"/api/palestrante/{palestrante.Id}", palestrante);
                     }
 
+                    throw new Exception();
+                }
+
+                return NotFound();
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                Palestrante palestrante = await _palestranteRepository.GetPalestranteByIdAsync(id);
+                if (palestrante != null)
+                {
+                    _palestranteRepository.Delete(palestrante);
+                    if (await _palestranteRepository.SaveChangesAsync())
+                    {
+                        return NoContent();
+                    }
                     throw new Exception();
                 }
 
