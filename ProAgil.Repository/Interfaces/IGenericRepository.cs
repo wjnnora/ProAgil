@@ -7,6 +7,7 @@ namespace ProAgil.Repository.Interfaces
          void Insert(T Entity);
          void Update(T Entity);
          void Delete(T Entity);
+         Task<bool> Exists(int id);
          Task<bool> SaveChangesAsync();
     }
 }
