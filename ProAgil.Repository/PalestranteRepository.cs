@@ -31,7 +31,7 @@ namespace ProAgil.Repository
             return await query.AsSplitQuery().FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<Palestrante> GetPalestranteByNameAsync(string nome)
+        public async Task<Palestrante> GetPalestranteByNomeAsync(string nome)
         {
             IQueryable<Palestrante> query = _context.Palestrantes
                 .Include(pe => pe.PalestranteEventos).ThenInclude(e => e.Evento)
