@@ -21,8 +21,7 @@ namespace ProAgil.Repository
         /// <returns>An event list.</returns>
         public async Task<IEnumerable<Evento>> GetAllEventosAsync(bool includePalestrantes = false)
         {
-            IQueryable<Evento> query = _context.Eventos
-                .Include(ll => ll.Local)
+            IQueryable<Evento> query = _context.Eventos                
                 .Include(lt => lt.Lotes)
                 .Include(rs => rs.RedesSociais);
 
@@ -33,7 +32,7 @@ namespace ProAgil.Repository
                     .ThenInclude(p => p.Palestrante);
             }
             
-            return await query.OrderByDescending(e => e.DataEvento).ToArrayAsync();           
+            return await query.OrderByDescending(e => e.DataEvento).AsSplitQuery().ToArrayAsync();           
         }
 
         /// <summary>
@@ -44,8 +43,7 @@ namespace ProAgil.Repository
         /// <returns>An event.</returns>
         public async Task<Evento> GetEventoByIdAsync(int id, bool includePalestrantes = false)
         {
-            IQueryable<Evento> query = _context.Eventos
-                .Include(ll => ll.Local)
+            IQueryable<Evento> query = _context.Eventos                
                 .Include(lt => lt.Lotes)
                 .Include(rs => rs.RedesSociais);
 
@@ -56,7 +54,7 @@ namespace ProAgil.Repository
                     .ThenInclude(p => p.Palestrante);
             }
 
-            return await query.FirstOrDefaultAsync(e => e.Id == id);
+            return await query.AsSplitQuery().FirstOrDefaultAsync(e => e.Id == id);
         }
 
         /// <summary>
@@ -67,8 +65,7 @@ namespace ProAgil.Repository
         /// <returns>An event.</returns>
         public async Task<Evento> GetEventosByTemaAsync(string tema, bool includePalestrantes = false)
         {
-            IQueryable<Evento> query = _context.Eventos
-                .Include(ll => ll.Local)
+            IQueryable<Evento> query = _context.Eventos                
                 .Include(lt => lt.Lotes)
                 .Include(rs => rs.RedesSociais);
 
@@ -79,7 +76,7 @@ namespace ProAgil.Repository
                     .ThenInclude(p => p.Palestrante);
             }
 
-            return await query.FirstOrDefaultAsync(e => e.Tema.Contains(tema));
+            return await query.AsSplitQuery().FirstOrDefaultAsync(e => e.Tema.Contains(tema));
         }        
     }
 }
