@@ -34,7 +34,7 @@ namespace ProAgil.Repository
             IQueryable<Palestrante> query = _context.Palestrantes                
                 .Include(rs => rs.RedesSociais);
 
-            return await query.AsSplitQuery().FirstOrDefaultAsync(x => x.Nome.Contains(nome));
+            return await query.AsSplitQuery().FirstOrDefaultAsync(x => x.Nome.ToLower().Contains(nome.ToLower()));
         }        
     }
 }
