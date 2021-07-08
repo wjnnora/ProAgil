@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using ProAgil.Repository.Interfaces;
 
 namespace ProAgil.Repository
@@ -9,6 +10,7 @@ namespace ProAgil.Repository
         public GenericRepository(EventoContext context)
         {
             _context = context;
+            _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         /// <summary>
@@ -34,8 +36,9 @@ namespace ProAgil.Repository
         /// </summary>        
         /// <param name="Entity">The entity that will be updated.</param>
         public void Update(T Entity)
-        {            
-            _context.Update(Entity);
+        {
+            _context.Set<T>().Attach(Entity);
+            _context.Entry(Entity).State = EntityState.Modified;            
         }
 
         /// <summary>
