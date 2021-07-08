@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using ProAgil.Repository;
+using ProAgil.Repository.Interfaces;
 
 namespace ProAgil.Api
 {
@@ -29,6 +30,9 @@ namespace ProAgil.Api
         public void ConfigureServices(IServiceCollection services)
         {                        
             services.AddDbContext<EventoContext>(opt => opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped<IEventoRepository, EventoRepository>();
+            services.AddScoped<IPalestranteRepository, PalestranteRepository>();
+            services.AddScoped<IRedesSociaisRepository, RedesSociaisRepository>();
             services.AddControllers();            
         }
 
