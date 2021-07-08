@@ -45,9 +45,9 @@ namespace ProAgil.Api.Controllers
                 Evento evento = await _eventoRepository.GetEventoByIdAsync(id);
                 return Ok(evento);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 
@@ -59,9 +59,9 @@ namespace ProAgil.Api.Controllers
                 Evento evento = await _eventoRepository.GetEventosByTemaAsync(tema);
                 return Ok(evento);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocurreu um erro no servidor.");
             }
         }
 
@@ -79,9 +79,9 @@ namespace ProAgil.Api.Controllers
 
                 return BadRequest();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 
@@ -104,9 +104,9 @@ namespace ProAgil.Api.Controllers
 
                 return NotFound();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 
@@ -130,9 +130,9 @@ namespace ProAgil.Api.Controllers
 
                 return NotFound();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 
