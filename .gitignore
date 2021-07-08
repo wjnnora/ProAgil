@@ -486,3 +486,5 @@ testem.log
 .DS_Store
 Thumbs.db
 
+# Banco de dados
+Sqlite/ProAgil.db
