@@ -51,13 +51,17 @@ namespace ProAgil.Api.Controllers
             }
         }
 
-        [HttpGet("getByTema/{Tema}")]
+        [HttpGet("getByTema/{tema}")]        
         public async Task<IActionResult> Get(string tema)
         {
             try
             {
                 Evento evento = await _eventoRepository.GetEventosByTemaAsync(tema);
-                return Ok(evento);
+                if (evento != null)
+                {
+                    return Ok(evento);
+                }
+                return NotFound();
             }
             catch (Exception)
             {
@@ -85,7 +89,7 @@ namespace ProAgil.Api.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, Evento evento)
         {
             try
@@ -110,7 +114,7 @@ namespace ProAgil.Api.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             try
@@ -135,7 +139,5 @@ namespace ProAgil.Api.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
-
-
     }
 }
