@@ -33,6 +33,7 @@ namespace ProAgil.Api
             services.AddScoped<IEventoRepository, EventoRepository>();
             services.AddScoped<IPalestranteRepository, PalestranteRepository>();
             services.AddScoped<IRedesSociaisRepository, RedesSociaisRepository>();
+            services.AddScoped<ILoteRepository, LoteRepository>();
             services.AddControllers();            
         }
 
