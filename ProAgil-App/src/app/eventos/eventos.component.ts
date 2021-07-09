@@ -38,8 +38,7 @@ export class EventosComponent implements OnInit {
     this.eventoService.getAllEventos().subscribe(
       (response: Evento[]) => {
       this.eventos = response;    
-      this.eventosFiltrados = response;
-      console.log(response);
+      this.eventosFiltrados = response;      
     }, error => {
       console.log(error);
     });   
