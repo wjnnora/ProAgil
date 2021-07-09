@@ -1,7 +1,11 @@
 import { EventoService } from '../_service/evento.service';
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { Evento } from '../_model/evento';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { FormBuilder, Validators } from '@angular/forms';
+import { defineLocale, ptBrLocale } from 'ngx-bootstrap/chronos';
+import { BsLocaleService } from 'ngx-bootstrap/datepicker';
+defineLocale('pt-br', ptBrLocale);
 
 @Component({
   selector: 'app-eventos',
@@ -15,28 +19,47 @@ export class EventosComponent implements OnInit {
   eventosFiltrados: Evento[];  
   showImg = true;  
   _filtroBuscar: string;
-  modalRef: any;
+  registerForm: any;
 
-  constructor(private eventoService: EventoService, private modalService: BsModalService) {
+  constructor(private eventoService: EventoService, private modalService: BsModalService,
+    private fb: FormBuilder, private localeService: BsLocaleService) {
     this.eventos = [];
     this.eventosFiltrados = [];
-    this._filtroBuscar = '';    
+    this._filtroBuscar = '';
+    this.localeService.use('pt-br');
   }
   
   ngOnInit() {
-    this.getEventos();          
+    this.getEventos();
+    this.validation();
   }
-
-  openModal(template: TemplateRef<any>) {
-    this.modalRef = this.modalService.show(template);
-  }
-
+  
   get filtroBuscar(): string{
     return this._filtroBuscar;
   }
   set filtroBuscar(value: string){
     this._filtroBuscar = value;
     this.eventosFiltrados = this.filtroBuscar ? this.filtrarEventos(this.filtroBuscar) : this.eventos;
+  }
+
+  openModal(template: any) {
+    template.show(template);
+  }
+
+  validation() {
+    this.registerForm = this.fb.group({
+      tema: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
+      local: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
+      dataEvento: ['',  [Validators.required]],
+      qtdPessoas: ['', [Validators.required, Validators.min(1), Validators.max(999)]],
+      imagePath: ['', [Validators.required]],
+      telefone: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]]
+    })
+   }
+
+  salvarAlteracao() {
+
   }
 
   getEventos(){
