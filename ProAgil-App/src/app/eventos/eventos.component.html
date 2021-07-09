@@ -13,7 +13,9 @@
     <thead class="table-dark">
       <tr>
         <th (click)="getExibirImagem()" class="text-center">
-          <button class="btn btn-outline-info">Mostrar Imagem</button>
+          <button class="btn btn-outline-info">
+            <i class="{{showImg ? 'fa fa-eye-slash' : 'fa fa-eye'}}"></i>
+          </button>
         </th>
         <th class="text-center">#</th>
         <th class="text-center">Tema</th>
@@ -27,14 +29,21 @@
     <tbody *ngIf="eventos && eventos.length">
       <tr *ngFor="let evento of eventosFiltrados">
         <td class="text-center">
-          <img *ngIf="showImg" src="http://localhost:5000/{{evento.imagePath}}" [style.width.px]="50" [style.margin.px]="2"/>
-        </td>
-        <td class="text-center">{{evento.eventoId}}</td>
-        <td class="text-center">{{evento.local}}</td>
-        <td class="text-center">{{evento.dataEvento}}</td>
+          <img *ngIf="showImg" src="http://localhost:5000/img/{{evento.imagePath}}" [style.width.px]="50" [style.margin.px]="2"/>
+        </td>        
+        <td class="text-center">{{evento.id}}</td>
         <td class="text-center">{{evento.tema}}</td>
+        <td class="text-center">{{evento.local}}</td>
+        <td class="text-center">{{evento.dataEvento | datetimeformatpipe}}</td>
         <td class="text-center">{{evento.qtdPessoas}}</td>
-        <td class="text-center">{{evento.lote | uppercase}}</td>
+        <td class="text-center">
+          <div *ngIf="evento.lotes.length">
+            {{evento.lotes[0].nome | uppercase}}
+          </div>
+          <div *ngIf="!evento.lotes.length">
+            Não informado
+          </div>
+        </td>
         <td class="align-middle text-center">
           <button type="button" class="btn btn-primary me-2">Editar</button>
           <button type="button" class="btn btn-danger">Apagar</button>
