@@ -1,6 +1,7 @@
 import { EventoService } from '../_service/evento.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { Evento } from '../_model/evento';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-eventos',
@@ -14,12 +15,21 @@ export class EventosComponent implements OnInit {
   eventosFiltrados: Evento[];  
   showImg = true;  
   _filtroBuscar: string;
+  modalRef: any;
 
-  constructor(private eventoService: EventoService) {
+  constructor(private eventoService: EventoService, private modalService: BsModalService) {
     this.eventos = [];
     this.eventosFiltrados = [];
-    this._filtroBuscar = '';
-   }
+    this._filtroBuscar = '';    
+  }
+  
+  ngOnInit() {
+    this.getEventos();          
+  }
+
+  openModal(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(template);
+  }
 
   get filtroBuscar(): string{
     return this._filtroBuscar;
@@ -27,11 +37,6 @@ export class EventosComponent implements OnInit {
   set filtroBuscar(value: string){
     this._filtroBuscar = value;
     this.eventosFiltrados = this.filtroBuscar ? this.filtrarEventos(this.filtroBuscar) : this.eventos;
-  }
-
-
-  ngOnInit() {
-    this.getEventos();          
   }
 
   getEventos(){
