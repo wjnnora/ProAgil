@@ -16,29 +16,24 @@ namespace ProAgil.Repository
 
         public async Task<IEnumerable<RedeSocial>> GetAllRedesSociaisAsync()
         {
-            IQueryable<RedeSocial> query = _context.RedesSociais
-                .Include(rs => rs.Palestrante)
-                .Include(e => e.Evento);
+            IQueryable<RedeSocial> query = _context.RedesSociais;
 
             return await query.OrderBy(x => x.Nome).ToArrayAsync();
         }
 
         public async Task<RedeSocial> GetRedeSocialByIdAsync(int id)
         {
-            IQueryable<RedeSocial> query = _context.RedesSociais
-                .Include(rs => rs.Palestrante)
-                .Include(e => e.Evento);
+            IQueryable<RedeSocial> query = _context.RedesSociais;
+
 
             return await query.FirstOrDefaultAsync(rs => rs.Id == id);
         }
 
         public async Task<RedeSocial> GetRedeSocialByNomeAsync(string nome)
         {
-            IQueryable<RedeSocial> query = _context.RedesSociais
-                .Include(rs => rs.Palestrante)
-                .Include(e => e.Evento);
+            IQueryable<RedeSocial> query = _context.RedesSociais;
 
-            return await query.FirstOrDefaultAsync(rs => rs.Nome.Contains(nome));
+            return await query.FirstOrDefaultAsync(rs => rs.Nome.ToLower().Contains(nome.ToLower()));
         }
     }
 }
