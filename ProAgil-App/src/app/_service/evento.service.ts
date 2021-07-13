@@ -12,14 +12,26 @@ export class EventoService {
   constructor(private http: HttpClient) { }
 
   getAllEventos(): Observable<Evento[]>{    
-    return this.http.get<Evento[]>(`${environment.apiUrl}/Evento/`);
+    return this.http.get<Evento[]>(`${environment.apiUrl}/evento/`);
   }
 
-  getEventoByTema(tema: string): Observable<Evento > {
-    return this.http.get<Evento>(`${environment.apiUrl}/Evento/getByTema/${tema}`)
+  getEventoByTema(tema: string): Observable<Evento> {
+    return this.http.get<Evento>(`${environment.apiUrl}/evento/getbytema/${tema}`)
   }
 
-  getEventoById(id: number): Observable<Evento > {
-    return this.http.get<Evento>(`${environment.apiUrl}/Evento/${id}`)
+  getEventoById(id: number): Observable<Evento> {
+    return this.http.get<Evento>(`${environment.apiUrl}/evento/${id}`)
+  }
+
+  insertEvento(evento: Evento): Observable<Evento> {    
+    return this.http.post<Evento>(`${environment.apiUrl}/evento/`, evento);
+  }
+
+  updateEvento(evento: Evento): Observable<Evento> {
+    return this.http.put<Evento>(`${environment.apiUrl}/evento/${evento.id}`, evento);
+  }
+  
+  deleteEvento(eventoId: number): Observable<Evento> {
+    return this.http.delete<Evento>(`${environment.apiUrl}/evento/${eventoId}`)
   }
 }

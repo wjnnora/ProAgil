@@ -52,10 +52,10 @@
         </td>
         <td class="align-middle text-center">
           <div class="btn btn-group">
-            <button type="button" class="btn btn-primary btn-sm" tooltip="Editar" (click)="openModal(template)">
+            <button type="button" class="btn btn-primary btn-sm" tooltip="Editar" (click)="editarEvento(evento, template)">
               <i class="fa fa-edit"></i>
             </button>
-            <button type="button" class="btn btn-danger btn-sm" tooltip="Excluir">
+            <button type="button" class="btn btn-danger btn-sm" tooltip="Excluir" (click)='excluirEvento(evento.id)'>
               <i class="fa fa-eraser"></i>
             </button>
           </div>          
@@ -119,7 +119,7 @@ role="dialog" aria-labelledby="dialog-sizes-name1">
         </div> 
         <div class="col-md-3">
           <label>Vagas</label>
-          <input type="text" class="form-control" [ngClass]="{'is-invalid': registerForm.get('qtdPessoas').errors && registerForm.get('qtdPessoas').touched}" formControlName="qtdPessoas" placeholder="Vagas">
+          <input type="number" class="form-control" [ngClass]="{'is-invalid': registerForm.get('qtdPessoas').errors && registerForm.get('qtdPessoas').touched}" formControlName="qtdPessoas" placeholder="Vagas">
           <div *ngIf="registerForm.get('qtdPessoas').hasError('required') && registerForm.get('qtdPessoas').touched" class="invalid-feedback">
             Quantidade de Vagas é obrigatório.
           </div>
@@ -137,14 +137,14 @@ role="dialog" aria-labelledby="dialog-sizes-name1">
             Imagem do Evento é obrigatório.
           </div>
         </div> 
-        <div class="col-md-8">
+        <div class="col-md-4">
           <label>Telefone</label>
           <input type="text" class="form-control" [ngClass]="{'is-invalid': registerForm.get('telefone').errors && registerForm.get('telefone').touched}" formControlName="telefone" placeholder="Telefone">
           <div class="invalid-feedback">
             Telefone é obrigatório.
           </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-8">
           <label>E-mail</label>
           <input type="text" class="form-control" [ngClass]="{'is-invalid': registerForm.get('email').errors && registerForm.get('email').touched}" formControlName="email" placeholder="email">
           <div *ngIf="registerForm.get('email').hasError('required') && registerForm.get('email').touched" class="invalid-feedback">
@@ -160,10 +160,10 @@ role="dialog" aria-labelledby="dialog-sizes-name1">
       <button class="btn btn-dark me-1" (click)="template.hide()">
         Fechar
       </button>
-      <button class="btn btn-primary ms-auto" [disabled]="!registerForm.valid" (click)="salvarAlteracao()">
+      <button class="btn btn-primary ms-auto" [disabled]="!registerForm.valid" (click)="salvarAlteracao(template)">
         Salvar Alterações
       </button>
     </div>
   </div>
 </div>
-</div>
+</div>  

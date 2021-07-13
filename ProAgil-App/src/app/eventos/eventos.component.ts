@@ -1,5 +1,5 @@
 import { EventoService } from '../_service/evento.service';
-import { Component, OnInit, TemplateRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Evento } from '../_model/evento';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { FormBuilder, Validators } from '@angular/forms';
@@ -15,18 +15,17 @@ defineLocale('pt-br', ptBrLocale);
   
 export class EventosComponent implements OnInit {
 
-  eventos: Evento[];  
+  eventos: Evento[] = [];
+  evento: Evento;
   eventosFiltrados: Evento[];  
   showImg = true;  
   _filtroBuscar: string;
   registerForm: any;
+  saveMode: string;
 
   constructor(private eventoService: EventoService, private modalService: BsModalService,
-    private fb: FormBuilder, private localeService: BsLocaleService) {
-    this.eventos = [];
-    this.eventosFiltrados = [];
-    this._filtroBuscar = '';
-    this.localeService.use('pt-br');
+    private fb: FormBuilder, private localeService: BsLocaleService) {    
+    this.localeService.use('pt-br');    
   }
   
   ngOnInit() {
@@ -42,10 +41,6 @@ export class EventosComponent implements OnInit {
     this.eventosFiltrados = this.filtroBuscar ? this.filtrarEventos(this.filtroBuscar) : this.eventos;
   }
 
-  openModal(template: any) {
-    template.show(template);
-  }
-
   validation() {
     this.registerForm = this.fb.group({
       tema: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
@@ -57,10 +52,6 @@ export class EventosComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]]
     })
    }
-
-  salvarAlteracao() {
-
-  }
 
   getEventos(){
     this.eventoService.getAllEventos().subscribe(
@@ -81,5 +72,54 @@ export class EventosComponent implements OnInit {
     return this.eventos.filter(
       (evento: Evento) => evento.tema.toLocaleLowerCase().indexOf(filtro) !== -1
     );
+  }
+
+  openModal(template: any) {
+    this.registerForm.reset();
+    template.show(template);
+  }
+
+  editarEvento(evento: Evento, template: any) {
+    this.openModal(template);
+    this.evento = evento;
+    this.registerForm.patchValue(evento);
+    this.saveMode = 'put';
+  }
+
+  excluirEvento(eventoId: number) {
+    this.eventoService.deleteEvento(eventoId).subscribe(
+      () => {
+        this.getEventos();
+      }, error => {
+        console.log(error);
+      }
+    )
+  }
+
+  salvarAlteracao(template: any) {
+    if (this.registerForm.valid) {      
+      if (this.saveMode === 'put') {
+        this.evento = Object.assign({id: this.evento.id}, this.registerForm.value);
+        this.eventoService.updateEvento(this.evento).subscribe(
+          response => {                    
+            template.hide();
+            this.getEventos();
+          }, error => {
+            console.log(error);
+          }
+        );
+      }
+      else {
+        this.evento = Object.assign({}, this.registerForm.value);
+        this.eventoService.insertEvento(this.evento).subscribe(
+          response => {                    
+            template.hide();
+            this.getEventos();
+          }, error => {
+            console.log(error);
+          }
+        );
+      }
+    }
   }
 }
