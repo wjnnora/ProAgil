@@ -22,6 +22,7 @@ export class EventosComponent implements OnInit {
   _filtroBuscar: string;
   registerForm: any;
   saveMode: string;
+  mensagemExcluir: string;
 
   constructor(private eventoService: EventoService, private modalService: BsModalService,
     private fb: FormBuilder, private localeService: BsLocaleService) {    
@@ -86,10 +87,17 @@ export class EventosComponent implements OnInit {
     this.saveMode = 'put';
   }
 
-  excluirEvento(eventoId: number) {
+  openModalExcluir(evento: Evento, template: any) {
+    this.evento = evento;
+    this.mensagemExcluir = `Tem certeza que deseja excluir o evento ${evento.tema.toUpperCase()}?`;
+    this.openModal(template);
+  }
+
+  excluirEvento(eventoId: number, template: any) {
     this.eventoService.deleteEvento(eventoId).subscribe(
       () => {
         this.getEventos();
+        template.hide();
       }, error => {
         console.log(error);
       }

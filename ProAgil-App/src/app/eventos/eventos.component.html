@@ -55,7 +55,7 @@
             <button type="button" class="btn btn-primary btn-sm" tooltip="Editar" (click)="editarEvento(evento, template)">
               <i class="fa fa-edit"></i>
             </button>
-            <button type="button" class="btn btn-danger btn-sm" tooltip="Excluir" (click)='excluirEvento(evento.id)'>
+            <button type="button" class="btn btn-danger btn-sm" tooltip="Excluir" (click)='openModalExcluir(evento, excluirTemplate)'>
               <i class="fa fa-eraser"></i>
             </button>
           </div>          
@@ -64,7 +64,7 @@
     </tbody>
     <tfoot *ngIf="!eventos.length">
       <tr>
-        <td colspan="7" class=text-center>
+        <td colspan="8" class=text-center>
           <h3>Nenhum item encontrado.</h3>
         </td>
       </tr>
@@ -72,98 +72,123 @@
   </table>
 </div>
 
-<div bsModal #template="bs-modal" class="modal fade" tabindex="-1"
-role="dialog" aria-labelledby="dialog-sizes-name1">
-<div class="modal-dialog modal-lg">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h4 id="dialog-sizes-name1" class="modal-title pull-left">Evento</h4>
-      <button type="button" class="close pull-right" (click)="template.hide()" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body">
-      <form [formGroup]="registerForm" class="row g-3">
-        <div class="col-md-12">
-          <label>Tema</label>
-          <input type="text" class="form-control" [ngClass]="{'is-invalid': registerForm.get('tema').errors && registerForm.get('tema').touched}" formControlName="tema" placeholder="Tema">
-          <div *ngIf="registerForm.get('tema').hasError('required') && registerForm.get('tema').touched" class="invalid-feedback">
-            Tema é obrigatório.
+<div bsModal #template="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-sizes-name1" class="modal-title pull-left">Evento</h4>
+        <button type="button" class="close pull-right" (click)="template.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="registerForm" class="row g-3">
+          <div class="col-md-12">
+            <label>Tema</label>
+            <input type="text" class="form-control" [ngClass]="{'is-invalid': registerForm.get('tema').errors && registerForm.get('tema').touched}" formControlName="tema" placeholder="Tema">
+            <div *ngIf="registerForm.get('tema').hasError('required') && registerForm.get('tema').touched" class="invalid-feedback">
+              Tema é obrigatório.
+            </div>
+            <div *ngIf="registerForm.get('tema').hasError('minlength') && registerForm.get('tema').touched" class="invalid-feedback">
+              Tema deve ter no mínimo 2 caracteres.
+            </div>
+            <div *ngIf="registerForm.get('tema').hasError('maxlength') && registerForm.get('tema').touched" class="invalid-feedback">
+              Tema deve ter no máximo 50 caracteres.
+            </div>
+          </div>  
+          <div class="col-md-8">
+            <label>Local</label>
+            <input type="text" class="form-control" [ngClass]="{'is-invalid': registerForm.get('local').errors && registerForm.get('local').touched}" formControlName="local" placeholder="Local">
+            <div *ngIf="registerForm.get('local').hasError('required') && registerForm.get('local').touched" class="invalid-feedback">
+              Local é obrigatório.
+            </div>
+            <div *ngIf="registerForm.get('local').hasError('minlength') && registerForm.get('local').touched" class="invalid-feedback">
+              Local deve ter no mínimo 2 caracteres.
+            </div>
+            <div *ngIf="registerForm.get('local').hasError('maxlength') && registerForm.get('local').touched" class="invalid-feedback">
+              Local deve ter no máximo 50 caracteres.
+            </div>
           </div>
-          <div *ngIf="registerForm.get('tema').hasError('minlength') && registerForm.get('tema').touched" class="invalid-feedback">
-            Tema deve ter no mínimo 2 caracteres.
+          <div class="col-md-4">
+            <label>Data</label>
+            <input type="text" class="form-control" [ngClass]="{'is-invalid': registerForm.get('dataEvento').errors && registerForm.get('dataEvento').touched}" formControlName="dataEvento" placeholder="Data e Hora do Evento" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY hh:mm a' }">
+            <div class="invalid-feedback">
+              Data e Hora do Evento é obrigatório.
+            </div>      
+          </div> 
+          <div class="col-md-3">
+            <label>Vagas</label>
+            <input type="number" class="form-control" [ngClass]="{'is-invalid': registerForm.get('qtdPessoas').errors && registerForm.get('qtdPessoas').touched}" formControlName="qtdPessoas" placeholder="Vagas">
+            <div *ngIf="registerForm.get('qtdPessoas').hasError('required') && registerForm.get('qtdPessoas').touched" class="invalid-feedback">
+              Quantidade de Vagas é obrigatório.
+            </div>
+            <div *ngIf="registerForm.get('qtdPessoas').hasError('min') && registerForm.get('qtdPessoas').touched" class="invalid-feedback">
+              Quantidade de Vagas deve ser no mínimo 1.
+            </div>
+            <div *ngIf="registerForm.get('qtdPessoas').hasError('max') && registerForm.get('qtdPessoas').touched" class="invalid-feedback">
+              Quantidade de Vagas deve ser no máximo 999.
+            </div>
           </div>
-          <div *ngIf="registerForm.get('tema').hasError('maxlength') && registerForm.get('tema').touched" class="invalid-feedback">
-            Tema deve ter no máximo 50 caracteres.
+          <div class="col-md-9">
+            <label>Imagem</label>
+            <input type="text" class="form-control" [ngClass]="{'is-invalid': registerForm.get('imagePath').errors && registerForm.get('imagePath').touched}" formControlName="imagePath" placeholder="Imagem do Evento">
+            <div class="invalid-feedback">
+              Imagem do Evento é obrigatório.
+            </div>
+          </div> 
+          <div class="col-md-4">
+            <label>Telefone</label>
+            <input type="text" class="form-control" [ngClass]="{'is-invalid': registerForm.get('telefone').errors && registerForm.get('telefone').touched}" formControlName="telefone" placeholder="Telefone">
+            <div class="invalid-feedback">
+              Telefone é obrigatório.
+            </div>
           </div>
-        </div>  
-        <div class="col-md-8">
-          <label>Local</label>
-          <input type="text" class="form-control" [ngClass]="{'is-invalid': registerForm.get('local').errors && registerForm.get('local').touched}" formControlName="local" placeholder="Local">
-          <div *ngIf="registerForm.get('local').hasError('required') && registerForm.get('local').touched" class="invalid-feedback">
-            Local é obrigatório.
+          <div class="col-md-8">
+            <label>E-mail</label>
+            <input type="text" class="form-control" [ngClass]="{'is-invalid': registerForm.get('email').errors && registerForm.get('email').touched}" formControlName="email" placeholder="email">
+            <div *ngIf="registerForm.get('email').hasError('required') && registerForm.get('email').touched" class="invalid-feedback">
+              Email é obrigatório.
+            </div>
+            <div *ngIf="registerForm.get('email').hasError('email') && registerForm.get('email').touched" class="invalid-feedback">
+              Email deve ser válido.
+            </div>
           </div>
-          <div *ngIf="registerForm.get('local').hasError('minlength') && registerForm.get('local').touched" class="invalid-feedback">
-            Local deve ter no mínimo 2 caracteres.
-          </div>
-          <div *ngIf="registerForm.get('local').hasError('maxlength') && registerForm.get('local').touched" class="invalid-feedback">
-            Local deve ter no máximo 50 caracteres.
-          </div>
-        </div>
-        <div class="col-md-4">
-          <label>Data</label>
-          <input type="text" class="form-control" [ngClass]="{'is-invalid': registerForm.get('dataEvento').errors && registerForm.get('dataEvento').touched}" formControlName="dataEvento" placeholder="Data e Hora do Evento" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY hh:mm a' }">
-          <div class="invalid-feedback">
-            Data e Hora do Evento é obrigatório.
-          </div>      
-        </div> 
-        <div class="col-md-3">
-          <label>Vagas</label>
-          <input type="number" class="form-control" [ngClass]="{'is-invalid': registerForm.get('qtdPessoas').errors && registerForm.get('qtdPessoas').touched}" formControlName="qtdPessoas" placeholder="Vagas">
-          <div *ngIf="registerForm.get('qtdPessoas').hasError('required') && registerForm.get('qtdPessoas').touched" class="invalid-feedback">
-            Quantidade de Vagas é obrigatório.
-          </div>
-          <div *ngIf="registerForm.get('qtdPessoas').hasError('min') && registerForm.get('qtdPessoas').touched" class="invalid-feedback">
-            Quantidade de Vagas deve ser no mínimo 1.
-          </div>
-          <div *ngIf="registerForm.get('qtdPessoas').hasError('max') && registerForm.get('qtdPessoas').touched" class="invalid-feedback">
-            Quantidade de Vagas deve ser no máximo 999.
-          </div>
-        </div>
-        <div class="col-md-9">
-          <label>Imagem</label>
-          <input type="text" class="form-control" [ngClass]="{'is-invalid': registerForm.get('imagePath').errors && registerForm.get('imagePath').touched}" formControlName="imagePath" placeholder="Imagem do Evento">
-          <div class="invalid-feedback">
-            Imagem do Evento é obrigatório.
-          </div>
-        </div> 
-        <div class="col-md-4">
-          <label>Telefone</label>
-          <input type="text" class="form-control" [ngClass]="{'is-invalid': registerForm.get('telefone').errors && registerForm.get('telefone').touched}" formControlName="telefone" placeholder="Telefone">
-          <div class="invalid-feedback">
-            Telefone é obrigatório.
-          </div>
-        </div>
-        <div class="col-md-8">
-          <label>E-mail</label>
-          <input type="text" class="form-control" [ngClass]="{'is-invalid': registerForm.get('email').errors && registerForm.get('email').touched}" formControlName="email" placeholder="email">
-          <div *ngIf="registerForm.get('email').hasError('required') && registerForm.get('email').touched" class="invalid-feedback">
-            Email é obrigatório.
-          </div>
-          <div *ngIf="registerForm.get('email').hasError('email') && registerForm.get('email').touched" class="invalid-feedback">
-            Email deve ser válido.
-          </div>
-        </div>
-      </form>
-    </div>
-    <div class="modal-footer d-flex">
-      <button class="btn btn-dark me-1" (click)="template.hide()">
-        Fechar
-      </button>
-      <button class="btn btn-primary ms-auto" [disabled]="!registerForm.valid" (click)="salvarAlteracao(template)">
-        Salvar Alterações
-      </button>
+        </form>
+      </div>
+      <div class="modal-footer d-flex">
+        <button class="btn btn-dark me-1" (click)="template.hide()">
+          Fechar
+        </button>
+        <button class="btn btn-primary ms-auto" [disabled]="!registerForm.valid" (click)="salvarAlteracao(template)">
+          Salvar Alterações
+        </button>
+      </div>
     </div>
   </div>
-</div>
+</div>  
+
+<div bsModal #excluirTemplate="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">        
+        <h4 id="dialog-sizes-name1" class="modal-title pull-left">ATENÇÃO</h4>
+        <button type="button" class="close pull-right" (click)="excluirTemplate.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="registerForm" class="row g-3">
+          <span class="text-center">{{mensagemExcluir}}</span>
+        </form>
+      </div>  
+      <div class="modal-footer d-flex">
+        <button class="btn btn-dark me-1" (click)="excluirTemplate.hide()">
+          Fechar
+        </button>
+        <button class="btn btn-danger ms-auto" (click)="excluirEvento(evento.id, excluirTemplate)">
+          Excluir
+        </button>
+      </div>    
+    </div> 
+  </div> 
 </div>  
