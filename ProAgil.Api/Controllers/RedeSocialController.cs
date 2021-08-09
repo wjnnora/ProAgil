@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ProAgil.Api.DTO;
 using ProAgil.Domain;
 using ProAgil.Repository.Interfaces;
 
@@ -13,9 +15,11 @@ namespace ProAgil.Api.Controllers
     public class RedeSocialController : ControllerBase
     {
         private readonly IRedesSociaisRepository _redeSocialRepository;
-        public RedeSocialController(IRedesSociaisRepository redeSocialRepository)
+        private readonly IMapper _mapper;
+        public RedeSocialController(IRedesSociaisRepository redeSocialRepository, IMapper mapper)
         {
             _redeSocialRepository = redeSocialRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -24,7 +28,8 @@ namespace ProAgil.Api.Controllers
             try
             {
                 IEnumerable<RedeSocial> redesSociais = await _redeSocialRepository.GetAllRedesSociaisAsync();
-                return Ok(redesSociais);
+                IEnumerable<RedeSocialResponse> redesSociaisResponse = _mapper.Map<IEnumerable<RedeSocialResponse>>(redesSociais);
+                return Ok(redesSociaisResponse);
             }
             catch (Exception)
             {
@@ -38,9 +43,10 @@ namespace ProAgil.Api.Controllers
             try
             {
                 RedeSocial redeSocial = await _redeSocialRepository.GetRedeSocialByIdAsync(id);
-                if (redeSocial != null)
+                RedeSocialResponse redeSocialResponse = _mapper.Map<RedeSocialResponse>(redeSocial);
+                if (redeSocialResponse != null)
                 {
-                    return Ok(redeSocial);
+                    return Ok(redeSocialResponse);
                 }
 
                 return NotFound();
@@ -57,9 +63,10 @@ namespace ProAgil.Api.Controllers
             try
             {
                 RedeSocial redeSocial = await _redeSocialRepository.GetRedeSocialByNomeAsync(nome);
-                if (redeSocial != null)
+                RedeSocialResponse redeSocialResponse = _mapper.Map<RedeSocialResponse>(redeSocial);
+                if (redeSocialResponse != null)
                 {
-                    return Ok(redeSocial);
+                    return Ok(redeSocialResponse);
                 }
 
                 return NotFound();

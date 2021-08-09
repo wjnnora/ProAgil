@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ProAgil.Api.DTO;
 using ProAgil.Domain;
 using ProAgil.Repository.Interfaces;
 
@@ -14,10 +16,12 @@ namespace ProAgil.Api.Controllers
     {
         private readonly ILoteRepository _loteRepository;
         private readonly IEventoRepository _eventoRepository;
-        public LoteController(ILoteRepository loteRepository, IEventoRepository eventoRepository)
+        private readonly IMapper _mapper;
+        public LoteController(ILoteRepository loteRepository, IEventoRepository eventoRepository, IMapper mapper)
         {
             _loteRepository = loteRepository;
             _eventoRepository = eventoRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -26,7 +30,8 @@ namespace ProAgil.Api.Controllers
             try
             {
                 IEnumerable<Lote> lotes = await _loteRepository.GetAllLotesAsync();
-                return Ok(lotes);
+                IEnumerable<LoteResponse> lotesResponse = _mapper.Map<IEnumerable<LoteResponse>>(lotes);
+                return Ok(lotesResponse);
             }
             catch (Exception)
             {
@@ -40,9 +45,10 @@ namespace ProAgil.Api.Controllers
             try
             {
                 Lote lote = await _loteRepository.GetLoteByIdAsync(id);
-                if (lote != null)
+                LoteResponse loteResponse = _mapper.Map<LoteResponse>(lote);
+                if (loteResponse != null)
                 {
-                    return Ok(lote);
+                    return Ok(loteResponse);
                 }
                 return NotFound();
             }

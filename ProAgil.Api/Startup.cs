@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using ProAgil.Repository;
 using ProAgil.Repository.Interfaces;
+using AutoMapper;
 
 namespace ProAgil.Api
 {
@@ -34,6 +35,7 @@ namespace ProAgil.Api
             services.AddScoped<IPalestranteRepository, PalestranteRepository>();
             services.AddScoped<IRedesSociaisRepository, RedesSociaisRepository>();
             services.AddScoped<ILoteRepository, LoteRepository>();
+            services.AddAutoMapper();
             services.AddControllers();            
         }
 

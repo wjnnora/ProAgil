@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ProAgil.Api.DTO;
 using ProAgil.Domain;
 using ProAgil.Repository.Interfaces;
 
@@ -13,9 +15,11 @@ namespace ProAgil.Api.Controllers
     public class PalestranteController: ControllerBase
     {
         private readonly IPalestranteRepository _palestranteRepository;
-        public PalestranteController(IPalestranteRepository palestranteRepository)
+        private readonly IMapper _mapper;
+        public PalestranteController(IPalestranteRepository palestranteRepository, IMapper mapper)
         {
             _palestranteRepository = palestranteRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -24,7 +28,8 @@ namespace ProAgil.Api.Controllers
             try
             {
                 IEnumerable<Palestrante> palestrantes = await _palestranteRepository.GetAllPalestrantesAsync();
-                return Ok(palestrantes);
+                IEnumerable<PalestranteResponse> palestrantesResponse = _mapper.Map<IEnumerable<PalestranteResponse>>(palestrantes);
+                return Ok(palestrantesResponse);
             }
             catch (Exception)
             {
@@ -38,9 +43,10 @@ namespace ProAgil.Api.Controllers
             try
             {
                 Palestrante palestrante = await _palestranteRepository.GetPalestranteByIdAsync(id);
-                if (palestrante != null)
+                PalestranteResponse palestranteResponse = _mapper.Map<PalestranteResponse>(palestrante);
+                if (palestranteResponse != null)
                 {
-                    return Ok(palestrante);
+                    return Ok(palestranteResponse);
                 }
                 return NotFound();
             }
@@ -50,16 +56,16 @@ namespace ProAgil.Api.Controllers
             }
         }
 
-        [HttpGet]    
-        [Route("getByName/{nome}")]    
+        [HttpGet("getByName/{nome}")]            
         public async Task<IActionResult> Get(string nome)
         {
             try
             {
                 Palestrante palestrante = await _palestranteRepository.GetPalestranteByNomeAsync(nome);
-                if (palestrante != null)
+                PalestranteResponse palestranteResponse = _mapper.Map<PalestranteResponse>(palestrante);
+                if (palestranteResponse != null)
                 {
-                    return Ok(palestrante);
+                    return Ok(palestranteResponse);
                 }
                 return NotFound();
             }

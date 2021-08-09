@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using ProAgil.Api.DTO;
 using ProAgil.Domain;
 using ProAgil.Repository;
 using ProAgil.Repository.Interfaces;
@@ -17,10 +19,12 @@ namespace ProAgil.Api.Controllers
     public class EventoController : ControllerBase
     {        
         private IEventoRepository _eventoRepository;
+        private IMapper _mapper;
 
-        public EventoController(IEventoRepository eventoRepository)
+        public EventoController(IEventoRepository eventoRepository, IMapper mapper)
         {   
             _eventoRepository = eventoRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -29,7 +33,8 @@ namespace ProAgil.Api.Controllers
             try
             {
                 IEnumerable<Evento> eventos = await _eventoRepository.GetAllEventosAsync();
-                return Ok(eventos);
+                IEnumerable<EventoResponse> eventosResponse = _mapper.Map<IEnumerable<EventoResponse>>(eventos);
+                return Ok(eventosResponse);
             }
             catch (Exception)
             {
@@ -43,7 +48,8 @@ namespace ProAgil.Api.Controllers
             try
             {
                 Evento evento = await _eventoRepository.GetEventoByIdAsync(id);
-                return Ok(evento);
+                EventoResponse eventoResponse = _mapper.Map<EventoResponse>(evento);
+                return Ok(eventoResponse);
             }
             catch (Exception)
             {
@@ -51,15 +57,16 @@ namespace ProAgil.Api.Controllers
             }
         }
 
-        [HttpGet("getByTema/{tema}")]        
+        [HttpGet("getByTema/{tema}")]            
         public async Task<IActionResult> Get(string tema)
         {
             try
             {
                 Evento evento = await _eventoRepository.GetEventosByTemaAsync(tema);
-                if (evento != null)
+                EventoResponse eventoResponse = _mapper.Map<EventoResponse>(evento);
+                if (eventoResponse != null)
                 {
-                    return Ok(evento);
+                    return Ok(eventoResponse);
                 }
                 return NotFound();
             }
