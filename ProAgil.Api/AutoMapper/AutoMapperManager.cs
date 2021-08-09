@@ -9,16 +9,16 @@ namespace ProAgil.Api.AutoMapper
     {
         public AutoMapperManager()
         {
-            CreateMap<Evento, EventoResponse>()
+            CreateMap<Evento, EventoDTO>()
                 .ForMember(from => from.Palestrantes, opt => {
                     opt.MapFrom(src => src.PalestranteEventos.Select(x => x.Palestrante).ToList());
-                });
-            CreateMap<Lote, LoteResponse>();
-            CreateMap<Palestrante, PalestranteResponse>()
+                }).ReverseMap();
+            CreateMap<Lote, LoteDTO>().ReverseMap();
+            CreateMap<Palestrante, PalestranteDTO>()
                 .ForMember(from => from.Eventos, opt => {
                     opt.MapFrom(src => src.PalestranteEventos.Select(x => x.Evento).ToList());
-                });
-            CreateMap<RedeSocial, RedeSocialResponse>();
+                }).ReverseMap();
+            CreateMap<RedeSocial, RedeSocialDTO>().ReverseMap();
         }
     }
 }

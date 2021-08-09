@@ -1,6 +1,6 @@
 namespace ProAgil.Api.DTO
 {
-    public class LoteResponse
+    public class LoteDTO
     {
         public int Id { get; set; }
         public string Nome { get; set; }

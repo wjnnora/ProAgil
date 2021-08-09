@@ -30,8 +30,8 @@ namespace ProAgil.Api.Controllers
             try
             {
                 IEnumerable<Lote> lotes = await _loteRepository.GetAllLotesAsync();
-                IEnumerable<LoteResponse> lotesResponse = _mapper.Map<IEnumerable<LoteResponse>>(lotes);
-                return Ok(lotesResponse);
+                IEnumerable<LoteDTO> lotesDTO = _mapper.Map<IEnumerable<LoteDTO>>(lotes);
+                return Ok(lotesDTO);
             }
             catch (Exception)
             {
@@ -45,10 +45,10 @@ namespace ProAgil.Api.Controllers
             try
             {
                 Lote lote = await _loteRepository.GetLoteByIdAsync(id);
-                LoteResponse loteResponse = _mapper.Map<LoteResponse>(lote);
-                if (loteResponse != null)
+                LoteDTO loteDTO = _mapper.Map<LoteDTO>(lote);
+                if (loteDTO != null)
                 {
-                    return Ok(loteResponse);
+                    return Ok(loteDTO);
                 }
                 return NotFound();
             }

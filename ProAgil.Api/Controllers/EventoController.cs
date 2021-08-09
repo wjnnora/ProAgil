@@ -33,8 +33,8 @@ namespace ProAgil.Api.Controllers
             try
             {
                 IEnumerable<Evento> eventos = await _eventoRepository.GetAllEventosAsync();
-                IEnumerable<EventoResponse> eventosResponse = _mapper.Map<IEnumerable<EventoResponse>>(eventos);
-                return Ok(eventosResponse);
+                IEnumerable<EventoDTO> eventosDTO = _mapper.Map<IEnumerable<EventoDTO>>(eventos);
+                return Ok(eventosDTO);
             }
             catch (Exception)
             {
@@ -48,8 +48,8 @@ namespace ProAgil.Api.Controllers
             try
             {
                 Evento evento = await _eventoRepository.GetEventoByIdAsync(id);
-                EventoResponse eventoResponse = _mapper.Map<EventoResponse>(evento);
-                return Ok(eventoResponse);
+                EventoDTO eventoDTO = _mapper.Map<EventoDTO>(evento);
+                return Ok(eventoDTO);
             }
             catch (Exception)
             {
@@ -63,10 +63,10 @@ namespace ProAgil.Api.Controllers
             try
             {
                 Evento evento = await _eventoRepository.GetEventosByTemaAsync(tema);
-                EventoResponse eventoResponse = _mapper.Map<EventoResponse>(evento);
-                if (eventoResponse != null)
+                EventoDTO eventoDTO = _mapper.Map<EventoDTO>(evento);
+                if (eventoDTO != null)
                 {
-                    return Ok(eventoResponse);
+                    return Ok(eventoDTO);
                 }
                 return NotFound();
             }

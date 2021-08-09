@@ -28,8 +28,8 @@ namespace ProAgil.Api.Controllers
             try
             {
                 IEnumerable<Palestrante> palestrantes = await _palestranteRepository.GetAllPalestrantesAsync();
-                IEnumerable<PalestranteResponse> palestrantesResponse = _mapper.Map<IEnumerable<PalestranteResponse>>(palestrantes);
-                return Ok(palestrantesResponse);
+                IEnumerable<PalestranteDTO> palestrantesDTO = _mapper.Map<IEnumerable<PalestranteDTO>>(palestrantes);
+                return Ok(palestrantesDTO);
             }
             catch (Exception)
             {
@@ -43,10 +43,10 @@ namespace ProAgil.Api.Controllers
             try
             {
                 Palestrante palestrante = await _palestranteRepository.GetPalestranteByIdAsync(id);
-                PalestranteResponse palestranteResponse = _mapper.Map<PalestranteResponse>(palestrante);
-                if (palestranteResponse != null)
+                PalestranteDTO palestranteDTO = _mapper.Map<PalestranteDTO>(palestrante);
+                if (palestranteDTO != null)
                 {
-                    return Ok(palestranteResponse);
+                    return Ok(palestranteDTO);
                 }
                 return NotFound();
             }
@@ -62,10 +62,10 @@ namespace ProAgil.Api.Controllers
             try
             {
                 Palestrante palestrante = await _palestranteRepository.GetPalestranteByNomeAsync(nome);
-                PalestranteResponse palestranteResponse = _mapper.Map<PalestranteResponse>(palestrante);
-                if (palestranteResponse != null)
+                PalestranteDTO palestranteDTO = _mapper.Map<PalestranteDTO>(palestrante);
+                if (palestranteDTO != null)
                 {
-                    return Ok(palestranteResponse);
+                    return Ok(palestranteDTO);
                 }
                 return NotFound();
             }

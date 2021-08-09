@@ -28,8 +28,8 @@ namespace ProAgil.Api.Controllers
             try
             {
                 IEnumerable<RedeSocial> redesSociais = await _redeSocialRepository.GetAllRedesSociaisAsync();
-                IEnumerable<RedeSocialResponse> redesSociaisResponse = _mapper.Map<IEnumerable<RedeSocialResponse>>(redesSociais);
-                return Ok(redesSociaisResponse);
+                IEnumerable<RedeSocialDTO> redesSociaisDTO = _mapper.Map<IEnumerable<RedeSocialDTO>>(redesSociais);
+                return Ok(redesSociaisDTO);
             }
             catch (Exception)
             {
@@ -43,10 +43,10 @@ namespace ProAgil.Api.Controllers
             try
             {
                 RedeSocial redeSocial = await _redeSocialRepository.GetRedeSocialByIdAsync(id);
-                RedeSocialResponse redeSocialResponse = _mapper.Map<RedeSocialResponse>(redeSocial);
-                if (redeSocialResponse != null)
+                RedeSocialDTO redeSocialDTO = _mapper.Map<RedeSocialDTO>(redeSocial);
+                if (redeSocialDTO != null)
                 {
-                    return Ok(redeSocialResponse);
+                    return Ok(redeSocialDTO);
                 }
 
                 return NotFound();
@@ -63,10 +63,10 @@ namespace ProAgil.Api.Controllers
             try
             {
                 RedeSocial redeSocial = await _redeSocialRepository.GetRedeSocialByNomeAsync(nome);
-                RedeSocialResponse redeSocialResponse = _mapper.Map<RedeSocialResponse>(redeSocial);
-                if (redeSocialResponse != null)
+                RedeSocialDTO redeSocialDTO = _mapper.Map<RedeSocialDTO>(redeSocial);
+                if (redeSocialDTO != null)
                 {
-                    return Ok(redeSocialResponse);
+                    return Ok(redeSocialDTO);
                 }
 
                 return NotFound();

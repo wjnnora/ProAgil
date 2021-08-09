@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace ProAgil.Api.DTO
 {
-    public class PalestranteResponse
+    public class PalestranteDTO
     {
         public int Id { get; set; }
         public string Nome { get; set; }
@@ -10,7 +10,7 @@ namespace ProAgil.Api.DTO
         public string ImagemURL { get; set; }
         public string Telefone { get; set; }
         public string Email { get; set; }
-        public List<EventoResponse> Eventos { get; set; }
-        public List<RedeSocialResponse> RedesSociais { get; set; }        
+        public List<EventoDTO> Eventos { get; set; }
+        public List<RedeSocialDTO> RedesSociais { get; set; }        
     }
 }

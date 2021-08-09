@@ -1,6 +1,6 @@
 namespace ProAgil.Api.DTO
 {
-    public class RedeSocialResponse
+    public class RedeSocialDTO
     {
         public int Id { get; set; }
         public string Nome { get; set; }
