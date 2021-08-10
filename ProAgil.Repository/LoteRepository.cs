@@ -20,6 +20,20 @@ namespace ProAgil.Repository
             return await query.OrderBy(x => x.EventoId).ThenBy(x => x.DataInicio).AsSplitQuery().ToArrayAsync();
         }
 
+        public async Task<Lote> GetLastLoteInserted()
+        {
+            IQueryable<Lote> query = _context.Lotes;
+
+            Lote lote = await query.OrderByDescending(x => x.Id).LastOrDefaultAsync();
+
+            if (lote != null) 
+            {
+                return await this.GetLoteByIdAsync(lote.Id);
+            }
+
+            return lote;
+        }
+
         public async Task<Lote> GetLoteByIdAsync(int id)
         {
             IQueryable<Lote> query = _context.Lotes;

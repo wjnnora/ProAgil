@@ -59,23 +59,17 @@ namespace ProAgil.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(Lote lote)
+        public async Task<IActionResult> Post(LoteDTO loteDTO)
         {
             try
             {
-                if (lote?.EventoId != null)
+                Lote lote = _mapper.Map<Lote>(loteDTO);
+                _loteRepository.Insert(lote);
+
+                if (await _loteRepository.SaveChangesAsync())
                 {
-                    if (await _eventoRepository.Exists(lote.EventoId))
-                    {
-                        _loteRepository.Insert(lote);
-
-                        if (await _loteRepository.SaveChangesAsync())
-                        {
-                            return Created($"api/lote/{lote.Id}", lote);
-                        }
-                    }
-
-                    return BadRequest($"EventId {lote.EventoId} doest not exists.");
+                    lote = await _loteRepository.GetLastLoteInserted();
+                    return Created($"api/lote/{lote.Id}", lote);
                 }
 
                 return BadRequest();    
@@ -87,13 +81,14 @@ namespace ProAgil.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, Lote lote)
+        public async Task<IActionResult> Put(int id, LoteDTO loteDTO)
         {
             try
             {
                 if (await _loteRepository.Exists(id))
                 {
-                    lote.Id = id;
+                    loteDTO.Id = id;
+                    Lote lote = _mapper.Map<Lote>(loteDTO);
                     _loteRepository.Update(lote);
 
                     if (await _loteRepository.SaveChangesAsync())

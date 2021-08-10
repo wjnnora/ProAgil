@@ -8,5 +8,6 @@ namespace ProAgil.Repository.Interfaces
     {
         Task<IEnumerable<Lote>> GetAllLotesAsync();
         Task<Lote> GetLoteByIdAsync(int id);
+        Task<Lote> GetLastLoteInserted();
     }
 }
