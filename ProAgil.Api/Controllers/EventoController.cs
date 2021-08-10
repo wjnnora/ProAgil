@@ -77,15 +77,18 @@ namespace ProAgil.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(Evento evento)
+        public async Task<IActionResult> Post(EventoDTO eventoDTO)
         {
             try
             {
-                _eventoRepository.Insert(evento);
+                Evento evento = _mapper.Map<Evento>(eventoDTO);
+                _eventoRepository.Insert(evento);                
 
                 if (await _eventoRepository.SaveChangesAsync())
                 {
-                    return Created($"/api/evento/{evento.Id}", evento);
+                    evento = (await _eventoRepository.GetAllEventosAsync()).OrderByDescending(x => x.Id).FirstOrDefault();
+                    eventoDTO = _mapper.Map<EventoDTO>(evento);
+                    return Created($"/api/evento/{eventoDTO.Id}", eventoDTO);
                 }
 
                 return BadRequest();
@@ -97,16 +100,19 @@ namespace ProAgil.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, Evento evento)
+        public async Task<IActionResult> Put(int id, EventoDTO eventoDTO)
         {
             try
             {
                 if (await _eventoRepository.Exists(id))
                 {
+                    eventoDTO.Id = id;
+                    Evento evento = _mapper.Map<Evento>(eventoDTO);
                     _eventoRepository.Update(evento);
 
                     if (await _eventoRepository.SaveChangesAsync())
                     {
+                        evento = await _eventoRepository.GetEventoByIdAsync(id);
                         return Created($"/api/evento/{evento.Id}", evento);
                     }
 
