@@ -78,13 +78,15 @@ namespace ProAgil.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(RedeSocial redeSocial)
+        public async Task<IActionResult> Post(RedeSocialDTO redeSocialDTO)
         {
             try
             {
+                RedeSocial redeSocial = _mapper.Map<RedeSocial>(redeSocialDTO);
                 _redeSocialRepository.Insert(redeSocial);
                 if (await _redeSocialRepository.SaveChangesAsync())
                 {
+                    redeSocial = await _redeSocialRepository.GetLastRedeSocialInserted();
                     return Created($"api/redesocial/{redeSocial.Id}", redeSocial);
                 }
 
@@ -97,18 +99,19 @@ namespace ProAgil.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, RedeSocial model)
+        public async Task<IActionResult> Put(int id, RedeSocialDTO redeSocialDTO)
         {
             try
             {
                 if (await _redeSocialRepository.Exists(id))
                 {
-                    model.Id = id;
-                    _redeSocialRepository.Update(model);
+                    redeSocialDTO.Id = id;
+                    RedeSocial redeSocial = _mapper.Map<RedeSocial>(redeSocialDTO);
+                    _redeSocialRepository.Update(redeSocial);
 
                     if (await _redeSocialRepository.SaveChangesAsync())
                     {
-                        return Created($"api/redesocial/{model.Id}", model);
+                        return Created($"api/redesocial/{redeSocial.Id}", redeSocial);
                     }
 
                     throw new Exception();
