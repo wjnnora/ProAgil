@@ -9,5 +9,6 @@ namespace ProAgil.Repository.Interfaces
         Task<Palestrante> GetPalestranteByIdAsync(int id);         
         Task<Palestrante> GetPalestranteByNomeAsync(string nome);
         Task<IEnumerable<Palestrante>> GetAllPalestrantesAsync();
+        Task<Palestrante> GetLastPalestranteInserted();
     }
 }

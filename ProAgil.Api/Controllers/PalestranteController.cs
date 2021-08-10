@@ -76,14 +76,16 @@ namespace ProAgil.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(Palestrante palestrante)
+        public async Task<IActionResult> Post(PalestranteDTO palestranteDTO)
         {
             try
             {
+                Palestrante palestrante = _mapper.Map<Palestrante>(palestranteDTO);
                 _palestranteRepository.Insert(palestrante);
 
                 if (await _palestranteRepository.SaveChangesAsync())
                 {
+                    palestrante = await _palestranteRepository.GetLastPalestranteInserted();
                     return Created($"api/palestrante/{palestrante.Id}", palestrante);
                 }
 
@@ -96,12 +98,13 @@ namespace ProAgil.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, Palestrante palestrante)
+        public async Task<IActionResult> Put(int id, PalestranteDTO palestranteDTO)
         {
             try
             {
                 if (await _palestranteRepository.Exists(id))
                 {
+                    Palestrante palestrante = _mapper.Map<Palestrante>(palestranteDTO);
                     _palestranteRepository.Update(palestrante);
 
                     if (await _palestranteRepository.SaveChangesAsync())
