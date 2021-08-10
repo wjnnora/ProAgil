@@ -86,9 +86,8 @@ namespace ProAgil.Api.Controllers
 
                 if (await _eventoRepository.SaveChangesAsync())
                 {
-                    evento = (await _eventoRepository.GetAllEventosAsync()).OrderByDescending(x => x.Id).FirstOrDefault();
-                    eventoDTO = _mapper.Map<EventoDTO>(evento);
-                    return Created($"/api/evento/{eventoDTO.Id}", eventoDTO);
+                    evento = await _eventoRepository.GetLastEventoInserted();
+                    return Created($"/api/evento/{evento.Id}", evento);
                 }
 
                 return BadRequest();

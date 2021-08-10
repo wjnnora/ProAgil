@@ -9,5 +9,6 @@ namespace ProAgil.Repository.Interfaces
          Task<Evento> GetEventoByIdAsync(int id, bool includePalestrantes = false);
          Task<Evento> GetEventosByTemaAsync(string tema, bool includePalestrantes = false);
          Task<IEnumerable<Evento>> GetAllEventosAsync(bool includePalestrantes = false);
+         Task<Evento> GetLastEventoInserted(bool includePalestrantes = false);
     }
 }
