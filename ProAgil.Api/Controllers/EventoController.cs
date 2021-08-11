@@ -82,12 +82,12 @@ namespace ProAgil.Api.Controllers
             try
             {
                 Evento evento = _mapper.Map<Evento>(eventoDTO);
-                _eventoRepository.Insert(evento);                
+                evento = await _eventoRepository.Insert(evento);
+                eventoDTO = _mapper.Map<EventoDTO>(evento);
 
-                if (await _eventoRepository.SaveChangesAsync())
-                {
-                    evento = await _eventoRepository.GetLastEventoInserted();
-                    return Created($"/api/evento/{evento.Id}", evento);
+                if (eventoDTO != null)
+                {                    
+                    return Created($"/api/evento/{eventoDTO.Id}", eventoDTO);
                 }
 
                 return BadRequest();
@@ -107,12 +107,12 @@ namespace ProAgil.Api.Controllers
                 {
                     eventoDTO.Id = id;
                     Evento evento = _mapper.Map<Evento>(eventoDTO);
-                    _eventoRepository.Update(evento);
+                    evento = await _eventoRepository.Update(evento);
+                    eventoDTO = _mapper.Map<EventoDTO>(evento);
 
-                    if (await _eventoRepository.SaveChangesAsync())
-                    {
-                        evento = await _eventoRepository.GetEventoByIdAsync(id);
-                        return Created($"/api/evento/{evento.Id}", evento);
+                    if (eventoDTO != null)
+                    {                        
+                        return Created($"/api/evento/{eventoDTO.Id}", eventoDTO);
                     }
 
                     throw new Exception();
@@ -134,9 +134,7 @@ namespace ProAgil.Api.Controllers
                 Evento evento = await _eventoRepository.GetEventoByIdAsync(id);
                 if (evento != null)
                 {
-                    _eventoRepository.Delete(evento);
-
-                    if (await _eventoRepository.SaveChangesAsync())
+                    if (await _eventoRepository.Delete(evento))
                     {
                         return NoContent();                        
                     }

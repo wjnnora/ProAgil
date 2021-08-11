@@ -64,12 +64,12 @@ namespace ProAgil.Api.Controllers
             try
             {
                 Lote lote = _mapper.Map<Lote>(loteDTO);
-                _loteRepository.Insert(lote);
+                lote = await _loteRepository.Insert(lote);
+                loteDTO = _mapper.Map<LoteDTO>(lote);
 
-                if (await _loteRepository.SaveChangesAsync())
-                {
-                    lote = await _loteRepository.GetLastLoteInserted();
-                    return Created($"api/lote/{lote.Id}", lote);
+                if (loteDTO != null)
+                {                    
+                    return Created($"api/lote/{loteDTO.Id}", loteDTO);
                 }
 
                 return BadRequest();    
@@ -89,11 +89,12 @@ namespace ProAgil.Api.Controllers
                 {
                     loteDTO.Id = id;
                     Lote lote = _mapper.Map<Lote>(loteDTO);
-                    _loteRepository.Update(lote);
+                    lote = await _loteRepository.Update(lote);
+                    loteDTO = _mapper.Map<LoteDTO>(lote);
 
-                    if (await _loteRepository.SaveChangesAsync())
+                    if (loteDTO != null)
                     {
-                        return Created($"api/evento/{lote.Id}", lote);
+                        return Created($"api/evento/{loteDTO.Id}", loteDTO);
                     }
 
                     throw new Exception();
@@ -114,10 +115,8 @@ namespace ProAgil.Api.Controllers
             {
                 Lote lote = await _loteRepository.GetLoteByIdAsync(id);
                 if (lote != null)
-                {                    
-                    _loteRepository.Delete(lote);
-
-                    if (await _loteRepository.SaveChangesAsync())
+                {   
+                    if (await _loteRepository.Delete(lote))
                     {
                         return NoContent();
                     }

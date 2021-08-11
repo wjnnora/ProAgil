@@ -81,12 +81,12 @@ namespace ProAgil.Api.Controllers
             try
             {
                 Palestrante palestrante = _mapper.Map<Palestrante>(palestranteDTO);
-                _palestranteRepository.Insert(palestrante);
+                palestrante = await _palestranteRepository.Insert(palestrante);
+                palestranteDTO = _mapper.Map<PalestranteDTO>(palestrante);
 
-                if (await _palestranteRepository.SaveChangesAsync())
-                {
-                    palestrante = await _palestranteRepository.GetLastPalestranteInserted();
-                    return Created($"api/palestrante/{palestrante.Id}", palestrante);
+                if (palestranteDTO != null)
+                {                    
+                    return Created($"api/palestrante/{palestranteDTO.Id}", palestranteDTO);
                 }
 
                 return BadRequest();
@@ -105,11 +105,12 @@ namespace ProAgil.Api.Controllers
                 if (await _palestranteRepository.Exists(id))
                 {
                     Palestrante palestrante = _mapper.Map<Palestrante>(palestranteDTO);
-                    _palestranteRepository.Update(palestrante);
+                    palestrante = await _palestranteRepository.Update(palestrante);
+                    palestranteDTO = _mapper.Map<PalestranteDTO>(palestrante);
 
-                    if (await _palestranteRepository.SaveChangesAsync())
+                    if (palestranteDTO != null)
                     {
-                        return Created($"/api/palestrante/{palestrante.Id}", palestrante);
+                        return Created($"/api/palestrante/{palestranteDTO.Id}", palestranteDTO);
                     }
 
                     throw new Exception();
@@ -130,9 +131,8 @@ namespace ProAgil.Api.Controllers
             {
                 Palestrante palestrante = await _palestranteRepository.GetPalestranteByIdAsync(id);
                 if (palestrante != null)
-                {
-                    _palestranteRepository.Delete(palestrante);
-                    if (await _palestranteRepository.SaveChangesAsync())
+                {                    
+                    if (await _palestranteRepository.Delete(palestrante))
                     {
                         return NoContent();
                     }

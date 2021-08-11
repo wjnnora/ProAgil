@@ -17,42 +17,53 @@ namespace ProAgil.Repository
         /// Save the entity.
         /// </summary>        
         /// <param name="Entity">The entity that will be saved.</param>
-        public void Insert(T Entity)
+        /// <returns>
+        /// Return the entity inserted.
+        /// </returns>
+        public async Task<T> Insert(T Entity)
         {
             _context.Set<T>().Add(Entity);
+            await _context.SaveChangesAsync();
+            return Entity;
         }
 
         /// <summary>
         /// Delete the entity.
         /// </summary>        
         /// <param name="Entity">The entity that will be deleted.</param>
-        public void Delete(T Entity)
+        /// <returns>
+        /// Return a boolean that indicates whether the entity was deleted.
+        /// </returns>
+        public async Task<bool> Delete(T Entity)
         {
             _context.Set<T>().Attach(Entity);
             _context.Entry(Entity).State = EntityState.Deleted;
+            return await _context.SaveChangesAsync() > 0;
+            
         }
 
         /// <summary>
         /// Update the entity.
         /// </summary>        
         /// <param name="Entity">The entity that will be updated.</param>
-        public void Update(T Entity)
+        /// <returns>
+        /// Return the entity updated.
+        /// </returns>
+        public async Task<T> Update(T Entity)
         {
             _context.Set<T>().Attach(Entity);
-            _context.Entry(Entity).State = EntityState.Modified;            
-        }
+            _context.Entry(Entity).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return Entity;
+        }     
 
         /// <summary>
-        /// Save changes.
-        /// </summary>    
+        /// Check if entity exists.
+        /// </summary>
+        /// <param name="id"></param>
         /// <returns>
-        /// Return a boolean that indicates whether changes was completed successfully. 
-        /// </returns> 
-        public async Task<bool> SaveChangesAsync()
-        {
-            return await _context.SaveChangesAsync() > 0;
-        }        
-
+        /// Return a boolean that indicates whether the entity exists.
+        /// </returns>
         public async Task<bool> Exists(int id)
         {            
             return await _context.Set<T>().FindAsync(id) != null;

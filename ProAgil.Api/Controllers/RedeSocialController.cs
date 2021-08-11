@@ -83,11 +83,12 @@ namespace ProAgil.Api.Controllers
             try
             {
                 RedeSocial redeSocial = _mapper.Map<RedeSocial>(redeSocialDTO);
-                _redeSocialRepository.Insert(redeSocial);
-                if (await _redeSocialRepository.SaveChangesAsync())
+                redeSocial = await _redeSocialRepository.Insert(redeSocial);
+                redeSocialDTO = _mapper.Map<RedeSocialDTO>(redeSocial);
+
+                if (redeSocialDTO != null)
                 {
-                    redeSocial = await _redeSocialRepository.GetLastRedeSocialInserted();
-                    return Created($"api/redesocial/{redeSocial.Id}", redeSocial);
+                    return Created($"api/redesocial/{redeSocialDTO.Id}", redeSocialDTO);
                 }
 
                 return BadRequest();
@@ -107,11 +108,12 @@ namespace ProAgil.Api.Controllers
                 {
                     redeSocialDTO.Id = id;
                     RedeSocial redeSocial = _mapper.Map<RedeSocial>(redeSocialDTO);
-                    _redeSocialRepository.Update(redeSocial);
+                    redeSocial = await _redeSocialRepository.Update(redeSocial);
+                    redeSocialDTO = _mapper.Map<RedeSocialDTO>(redeSocial);
 
-                    if (await _redeSocialRepository.SaveChangesAsync())
+                    if (redeSocialDTO != null)
                     {
-                        return Created($"api/redesocial/{redeSocial.Id}", redeSocial);
+                        return Created($"api/redesocial/{redeSocialDTO.Id}", redeSocialDTO);
                     }
 
                     throw new Exception();
@@ -133,9 +135,7 @@ namespace ProAgil.Api.Controllers
                 RedeSocial redeSocial = await _redeSocialRepository.GetRedeSocialByIdAsync(id);
                 if (redeSocial != null)
                 {                    
-                    _redeSocialRepository.Delete(redeSocial);
-
-                    if (await _redeSocialRepository.SaveChangesAsync())
+                    if (await _redeSocialRepository.Delete(redeSocial))
                     {
                         return NoContent();
                     }
