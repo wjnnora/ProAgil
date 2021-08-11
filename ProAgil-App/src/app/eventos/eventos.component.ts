@@ -5,6 +5,7 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { FormBuilder, Validators } from '@angular/forms';
 import { defineLocale, ptBrLocale } from 'ngx-bootstrap/chronos';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
+import { ToastrService } from 'ngx-toastr';
 defineLocale('pt-br', ptBrLocale);
 
 @Component({
@@ -25,7 +26,7 @@ export class EventosComponent implements OnInit {
   mensagemExcluir: string;
 
   constructor(private eventoService: EventoService, private modalService: BsModalService,
-    private fb: FormBuilder, private localeService: BsLocaleService) {    
+    private fb: FormBuilder, private localeService: BsLocaleService, private toastr: ToastrService) {    
     this.localeService.use('pt-br');    
   }
   
@@ -96,9 +97,11 @@ export class EventosComponent implements OnInit {
   excluirEvento(eventoId: number, template: any) {
     this.eventoService.deleteEvento(eventoId).subscribe(
       () => {
+        this.toastr.success("Deletado com sucesso.");
         this.getEventos();
         template.hide();
       }, error => {
+        this.toastr.error("Erro ao tentar deletar o evento.");
         console.log(error);
       }
     )
@@ -109,10 +112,13 @@ export class EventosComponent implements OnInit {
       if (this.saveMode === 'put') {
         this.evento = Object.assign({id: this.evento.id}, this.registerForm.value);
         this.eventoService.updateEvento(this.evento).subscribe(
-          response => {                    
+          response => {
+            this.toastr.success("Evento atualizado com sucesso.");
             template.hide();
             this.getEventos();
+            
           }, error => {
+            this.toastr.error("Erro ao atualizar o evento.");
             console.log(error);
           }
         );
@@ -120,10 +126,12 @@ export class EventosComponent implements OnInit {
       else {
         this.evento = Object.assign({}, this.registerForm.value);
         this.eventoService.insertEvento(this.evento).subscribe(
-          response => {                    
+          response => {
+            this.toastr.success("Evento inserido com sucesso.");
             template.hide();
             this.getEventos();
           }, error => {
+            this.toastr.error("Erro ao inserir o evento.");
             console.log(error);
           }
         );

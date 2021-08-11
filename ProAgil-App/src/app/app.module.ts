@@ -8,6 +8,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ToastrModule } from 'ngx-toastr';
 
 import { EventoService } from './_service/evento.service';
 
@@ -34,7 +35,8 @@ import { DatetimeformatpipePipe } from './_utils/datetimeformatpipe.pipe';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,        
+    ToastrModule.forRoot(),
   ],
   providers: [
     EventoService
