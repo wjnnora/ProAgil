@@ -56,17 +56,5 @@ namespace ProAgil.Repository
             await _context.SaveChangesAsync();
             return Entity;
         }     
-
-        /// <summary>
-        /// Check if entity exists.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns>
-        /// Return a boolean that indicates whether the entity exists.
-        /// </returns>
-        public async Task<bool> Exists(int id)
-        {            
-            return await _context.Set<T>().FindAsync(id) != null;
-        }        
     }
 }

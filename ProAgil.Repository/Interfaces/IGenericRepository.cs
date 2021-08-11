@@ -6,7 +6,6 @@ namespace ProAgil.Repository.Interfaces
     {
          Task<T> Insert(T Entity);
          Task<T> Update(T Entity);
-         Task<bool> Delete(T Entity);
-         Task<bool> Exists(int id);         
+         Task<bool> Delete(T Entity);         
     }
 }

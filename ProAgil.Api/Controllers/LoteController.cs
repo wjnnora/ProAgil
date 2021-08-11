@@ -65,14 +65,8 @@ namespace ProAgil.Api.Controllers
             {
                 Lote lote = _mapper.Map<Lote>(loteDTO);
                 lote = await _loteRepository.Insert(lote);
-                loteDTO = _mapper.Map<LoteDTO>(lote);
-
-                if (loteDTO != null)
-                {                    
-                    return Created($"api/lote/{loteDTO.Id}", loteDTO);
-                }
-
-                return BadRequest();    
+                _mapper.Map(lote, loteDTO);                
+                return Created($"api/lote/{loteDTO.Id}", loteDTO); 
             }
             catch (Exception)
             {
@@ -85,19 +79,13 @@ namespace ProAgil.Api.Controllers
         {
             try
             {
-                if (await _loteRepository.Exists(id))
+                Lote lote = await _loteRepository.GetLoteByIdAsync(id);
+                if (lote != null)
                 {
-                    loteDTO.Id = id;
-                    Lote lote = _mapper.Map<Lote>(loteDTO);
+                    _mapper.Map(loteDTO, lote);
                     lote = await _loteRepository.Update(lote);
-                    loteDTO = _mapper.Map<LoteDTO>(lote);
-
-                    if (loteDTO != null)
-                    {
-                        return Created($"api/evento/{loteDTO.Id}", loteDTO);
-                    }
-
-                    throw new Exception();
+                    _mapper.Map(lote, loteDTO);                    
+                    return Created($"api/evento/{loteDTO.Id}", loteDTO);
                 }
 
                 return NotFound();

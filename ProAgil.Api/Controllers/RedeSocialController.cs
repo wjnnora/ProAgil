@@ -84,14 +84,8 @@ namespace ProAgil.Api.Controllers
             {
                 RedeSocial redeSocial = _mapper.Map<RedeSocial>(redeSocialDTO);
                 redeSocial = await _redeSocialRepository.Insert(redeSocial);
-                redeSocialDTO = _mapper.Map<RedeSocialDTO>(redeSocial);
-
-                if (redeSocialDTO != null)
-                {
-                    return Created($"api/redesocial/{redeSocialDTO.Id}", redeSocialDTO);
-                }
-
-                return BadRequest();
+                _mapper.Map(redeSocial, redeSocialDTO);
+                return Created($"api/redesocial/{redeSocialDTO.Id}", redeSocialDTO);
             }
             catch (Exception)
             {
@@ -104,19 +98,13 @@ namespace ProAgil.Api.Controllers
         {
             try
             {
-                if (await _redeSocialRepository.Exists(id))
+                RedeSocial redeSocial = await _redeSocialRepository.GetRedeSocialByIdAsync(id);
+                if (redeSocial != null)
                 {
-                    redeSocialDTO.Id = id;
-                    RedeSocial redeSocial = _mapper.Map<RedeSocial>(redeSocialDTO);
+                    _mapper.Map(redeSocialDTO, redeSocial);                    
                     redeSocial = await _redeSocialRepository.Update(redeSocial);
-                    redeSocialDTO = _mapper.Map<RedeSocialDTO>(redeSocial);
-
-                    if (redeSocialDTO != null)
-                    {
-                        return Created($"api/redesocial/{redeSocialDTO.Id}", redeSocialDTO);
-                    }
-
-                    throw new Exception();
+                    _mapper.Map(redeSocial, redeSocialDTO);
+                    return Created($"api/redesocial/{redeSocialDTO.Id}", redeSocialDTO);
                 }
 
                 return NotFound();

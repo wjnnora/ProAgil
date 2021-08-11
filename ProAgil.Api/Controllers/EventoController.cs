@@ -83,14 +83,8 @@ namespace ProAgil.Api.Controllers
             {
                 Evento evento = _mapper.Map<Evento>(eventoDTO);
                 evento = await _eventoRepository.Insert(evento);
-                eventoDTO = _mapper.Map<EventoDTO>(evento);
-
-                if (eventoDTO != null)
-                {                    
-                    return Created($"/api/evento/{eventoDTO.Id}", eventoDTO);
-                }
-
-                return BadRequest();
+                _mapper.Map(evento, eventoDTO);
+                return Created($"/api/evento/{eventoDTO.Id}", eventoDTO);
             }
             catch (Exception)
             {
@@ -103,19 +97,14 @@ namespace ProAgil.Api.Controllers
         {
             try
             {
-                if (await _eventoRepository.Exists(id))
+                Evento evento = await _eventoRepository.GetEventoByIdAsync(id);
+                if (evento != null)
                 {
-                    eventoDTO.Id = id;
-                    Evento evento = _mapper.Map<Evento>(eventoDTO);
+                    _mapper.Map(eventoDTO, evento);
                     evento = await _eventoRepository.Update(evento);
-                    eventoDTO = _mapper.Map<EventoDTO>(evento);
+                    _mapper.Map(evento, eventoDTO);   
 
-                    if (eventoDTO != null)
-                    {                        
-                        return Created($"/api/evento/{eventoDTO.Id}", eventoDTO);
-                    }
-
-                    throw new Exception();
+                    return Created($"/api/evento/{eventoDTO.Id}", eventoDTO);                 
                 }
 
                 return NotFound();

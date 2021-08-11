@@ -82,14 +82,8 @@ namespace ProAgil.Api.Controllers
             {
                 Palestrante palestrante = _mapper.Map<Palestrante>(palestranteDTO);
                 palestrante = await _palestranteRepository.Insert(palestrante);
-                palestranteDTO = _mapper.Map<PalestranteDTO>(palestrante);
-
-                if (palestranteDTO != null)
-                {                    
-                    return Created($"api/palestrante/{palestranteDTO.Id}", palestranteDTO);
-                }
-
-                return BadRequest();
+                _mapper.Map(palestrante, palestranteDTO);                
+                return Created($"api/palestrante/{palestranteDTO.Id}", palestranteDTO);
             }
             catch (Exception)
             {
@@ -102,18 +96,14 @@ namespace ProAgil.Api.Controllers
         {
             try
             {
-                if (await _palestranteRepository.Exists(id))
+                Palestrante palestrante = await _palestranteRepository.GetPalestranteByIdAsync(id);
+                if (palestrante != null)
                 {
-                    Palestrante palestrante = _mapper.Map<Palestrante>(palestranteDTO);
+                    _mapper.Map(palestranteDTO, palestrante);
                     palestrante = await _palestranteRepository.Update(palestrante);
-                    palestranteDTO = _mapper.Map<PalestranteDTO>(palestrante);
+                    _mapper.Map(palestrante, palestranteDTO);   
 
-                    if (palestranteDTO != null)
-                    {
-                        return Created($"/api/palestrante/{palestranteDTO.Id}", palestranteDTO);
-                    }
-
-                    throw new Exception();
+                    return Created($"/api/palestrante/{palestranteDTO.Id}", palestranteDTO);                                     
                 }
 
                 return NotFound();
