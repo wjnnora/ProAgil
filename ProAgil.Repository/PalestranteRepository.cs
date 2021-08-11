@@ -21,20 +21,6 @@ namespace ProAgil.Repository
             return await query.AsSplitQuery().ToArrayAsync();
         }
 
-        public async Task<Palestrante> GetLastPalestranteInserted()
-        {
-            IQueryable<Palestrante> query = _context.Palestrantes;
-
-            Palestrante palestrante = await query.OrderByDescending(x => x.Id).LastOrDefaultAsync();
-
-            if (palestrante != null) 
-            {
-                return await this.GetPalestranteByIdAsync(palestrante.Id);
-            }
-
-            return palestrante;
-        }
-
         public async Task<Palestrante> GetPalestranteByIdAsync(int id)
         {
             IQueryable<Palestrante> query = _context.Palestrantes                

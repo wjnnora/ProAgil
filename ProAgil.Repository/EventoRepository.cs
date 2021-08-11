@@ -78,24 +78,5 @@ namespace ProAgil.Repository
 
             return await query.AsSplitQuery().FirstOrDefaultAsync(e => e.Tema.Contains(tema));
         }
-
-        /// <summary>
-        /// Get the last event inserted.
-        /// </summary>
-        /// <param name="includePalestrantes">Boolean that indicates whether Palestrantes shoud be included to the result.</param>
-        /// <returns>An event</returns>
-        public async Task<Evento> GetLastEventoInserted(bool includePalestrantes = false)
-        {
-            IQueryable<Evento> query = _context.Eventos;
-
-            Evento evento = await _context.Eventos.OrderByDescending(x => x.Id).LastOrDefaultAsync();
-
-            if (evento != null) 
-            {
-                return await this.GetEventoByIdAsync(evento.Id, includePalestrantes);
-            }
-
-            return evento;
-        }
     }
 }

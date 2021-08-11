@@ -19,20 +19,7 @@ namespace ProAgil.Repository
             IQueryable<RedeSocial> query = _context.RedesSociais;
 
             return await query.OrderBy(x => x.Nome).ToArrayAsync();
-        }
-
-        public async Task<RedeSocial> GetLastRedeSocialInserted()
-        {
-            IQueryable<RedeSocial> query = _context.RedesSociais;
-
-            RedeSocial redeSocial = await query.OrderByDescending(x => x.Id).LastOrDefaultAsync();
-
-            if (redeSocial != null) 
-            {
-                return await this.GetRedeSocialByIdAsync(redeSocial.Id);
-            }
-            return redeSocial;
-        }
+        }        
 
         public async Task<RedeSocial> GetRedeSocialByIdAsync(int id)
         {

@@ -8,7 +8,6 @@ namespace ProAgil.Repository.Interfaces
     {
          Task<RedeSocial> GetRedeSocialByIdAsync(int id);
          Task<RedeSocial> GetRedeSocialByNomeAsync(string nome);
-         Task<IEnumerable<RedeSocial>> GetAllRedesSociaisAsync();
-        Task<RedeSocial> GetLastRedeSocialInserted();
+         Task<IEnumerable<RedeSocial>> GetAllRedesSociaisAsync();        
     }
 }
