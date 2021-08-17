@@ -11,20 +11,26 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 
 import { EventoService } from './_service/evento.service';
+import { DatetimeformatpipePipe } from './_utils/datetimeformatpipe.pipe';
 
 import { AppComponent } from './app.component';
 import { EventosComponent } from './eventos/eventos.component';
 import { NavComponent } from './nav/nav.component';
+import { PalestrantesComponent } from './palestrantes/palestrantes.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { ContatosComponent } from './contatos/contatos.component';
 
-import { DatetimeformatpipePipe } from './_utils/datetimeformatpipe.pipe';
 
 @NgModule({
-  declarations: [		
+  declarations: [					
     AppComponent,
     EventosComponent,
     NavComponent,
-    DatetimeformatpipePipe
-  ],
+    DatetimeformatpipePipe,
+    PalestrantesComponent,
+    DashboardComponent,
+    ContatosComponent
+   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
