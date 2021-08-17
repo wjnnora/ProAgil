@@ -9,8 +9,8 @@ using ProAgil.Repository;
 namespace ProAgil.Repository.Migrations
 {
     [DbContext(typeof(EventoContext))]
-    [Migration("20210705215603_init")]
-    partial class init
+    [Migration("20210817175501_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -151,47 +151,37 @@ namespace ProAgil.Repository.Migrations
 
             modelBuilder.Entity("ProAgil.Domain.Lote", b =>
                 {
-                    b.HasOne("ProAgil.Domain.Evento", "Evento")
+                    b.HasOne("ProAgil.Domain.Evento", null)
                         .WithMany("Lotes")
                         .HasForeignKey("EventoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Evento");
                 });
 
             modelBuilder.Entity("ProAgil.Domain.PalestranteEvento", b =>
                 {
-                    b.HasOne("ProAgil.Domain.Evento", "Evento")
+                    b.HasOne("ProAgil.Domain.Evento", null)
                         .WithMany("PalestranteEventos")
                         .HasForeignKey("EventoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ProAgil.Domain.Palestrante", "Palestrante")
+                    b.HasOne("ProAgil.Domain.Palestrante", null)
                         .WithMany("PalestranteEventos")
                         .HasForeignKey("PalestranteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Evento");
-
-                    b.Navigation("Palestrante");
                 });
 
             modelBuilder.Entity("ProAgil.Domain.RedeSocial", b =>
                 {
-                    b.HasOne("ProAgil.Domain.Evento", "Evento")
+                    b.HasOne("ProAgil.Domain.Evento", null)
                         .WithMany("RedesSociais")
                         .HasForeignKey("EventoId");
 
-                    b.HasOne("ProAgil.Domain.Palestrante", "Palestrante")
+                    b.HasOne("ProAgil.Domain.Palestrante", null)
                         .WithMany("RedesSociais")
                         .HasForeignKey("PalestranteId");
-
-                    b.Navigation("Evento");
-
-                    b.Navigation("Palestrante");
                 });
 
             modelBuilder.Entity("ProAgil.Domain.Evento", b =>
