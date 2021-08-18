@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -72,7 +74,34 @@ namespace ProAgil.Api.Controllers
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocurreu um erro no servidor.");
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+            }
+        }
+
+        [HttpPost("upload")]
+        public IActionResult upload() 
+        { 
+            try
+            {
+                var file = Request.Form.Files[0];
+                string folderName = Path.Combine("Resources", "Image");
+                string pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);   
+
+                if (file.Length > 0) 
+                {
+                    string fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).Name;
+                    string fullPath = Path.Combine(pathToSave, fileName.Replace("\"", "").Trim());
+
+                    using (var stream = new FileStream(fullPath, FileMode.Create)) 
+                    {
+                        file.CopyTo(stream);
+                    }
+                }
+                return Ok();
+            }
+            catch (Exception)
+            {                
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 
