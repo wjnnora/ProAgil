@@ -18,7 +18,8 @@ export class EventosComponent implements OnInit {
   titulo = 'Evento';
   eventos: Evento[] = [];
   evento: Evento;
-  eventosFiltrados: Evento[];  
+  eventosFiltrados: Evento[];
+  file: File;
   showImg = true;  
   _filtroBuscar: string;
   registerForm: any;
@@ -109,7 +110,12 @@ export class EventosComponent implements OnInit {
   salvarAlteracao(template: any) {
     if (this.registerForm.valid) {      
       if (this.saveMode === 'put') {
-        this.evento = Object.assign({id: this.evento.id}, this.registerForm.value);
+        this.evento = Object.assign({ id: this.evento.id }, this.registerForm.value);
+        
+        this.eventoService.postUpload(this.file).subscribe();
+        const nomeArquivo = this.evento.imagePath.split("\\", 3);
+        this.evento.imagePath = nomeArquivo[2];
+
         this.eventoService.updateEvento(this.evento).subscribe(
           response => {
             this.toastr.success("Evento atualizado com sucesso.");
@@ -122,6 +128,11 @@ export class EventosComponent implements OnInit {
       }
       else {
         this.evento = Object.assign({}, this.registerForm.value);
+
+        this.eventoService.postUpload(this.file).subscribe();
+        const nomeArquivo = this.evento.imagePath.split("\\", 3);
+        this.evento.imagePath = nomeArquivo[2];
+        
         this.eventoService.insertEvento(this.evento).subscribe(
           response => {
             this.toastr.success("Evento inserido com sucesso.");
@@ -132,6 +143,14 @@ export class EventosComponent implements OnInit {
           }
         );
       }
+    }
+  }
+
+  onFileChange(event: any) {
+    const reader = new FileReader();
+
+    if (event.target.files && event.target.files.length) {
+      this.file = event.target.files[0];      
     }
   }
 }
