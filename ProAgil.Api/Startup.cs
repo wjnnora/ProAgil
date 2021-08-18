@@ -15,6 +15,9 @@ using Microsoft.EntityFrameworkCore;
 using ProAgil.Repository;
 using ProAgil.Repository.Interfaces;
 using AutoMapper;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace ProAgil.Api
 {
@@ -51,6 +54,11 @@ namespace ProAgil.Api
 
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions() 
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
+                RequestPath = new PathString("/Resources")
+            });
 
             app.UseRouting();
 
