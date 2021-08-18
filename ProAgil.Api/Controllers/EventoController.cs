@@ -84,12 +84,12 @@ namespace ProAgil.Api.Controllers
             try
             {
                 var file = Request.Form.Files[0];
-                string folderName = Path.Combine("Resources", "Image");
+                string folderName = Path.Combine("Resources", "Images");
                 string pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);   
 
                 if (file.Length > 0) 
                 {
-                    string fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).Name;
+                    string fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName;
                     string fullPath = Path.Combine(pathToSave, fileName.Replace("\"", "").Trim());
 
                     using (var stream = new FileStream(fullPath, FileMode.Create)) 
