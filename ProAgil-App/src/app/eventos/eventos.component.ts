@@ -134,8 +134,7 @@ export class EventosComponent implements OnInit {
           }
         );
       }
-      else {
-        console.log("Salvando...");
+      else {        
         this.evento = Object.assign({}, this.registerForm.value);
         this.uploadImage();
         this.eventoService.insertEvento(this.evento).subscribe(
