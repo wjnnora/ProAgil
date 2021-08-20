@@ -85,15 +85,16 @@ namespace ProAgil.Api.Controllers
             {
                 var file = Request.Form.Files[0];
                 string folderName = Path.Combine("Resources", "Images");
-                string pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);   
+                string fullPath = Path.Combine(Directory.GetCurrentDirectory(), folderName);   
 
                 if (file.Length > 0) 
-                {
-                    string fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName;
-                    string fullPath = Path.Combine(pathToSave, fileName.Replace("\"", "").Trim());
+                {                    
+                    string fileNameToSave = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName;                    
+                    fileNameToSave = fileNameToSave.Replace("\"", "").Trim();                    
+                    string fullPathToSave = Path.Combine(fullPath, fileNameToSave);                    
 
-                    using (var stream = new FileStream(fullPath, FileMode.Create)) 
-                    {
+                    using (var stream = new FileStream(fullPathToSave, FileMode.Create)) 
+                    {                                                
                         file.CopyTo(stream);
                     }
                 }
