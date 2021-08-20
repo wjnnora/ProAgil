@@ -6,8 +6,8 @@ namespace ProAgil.Repository
 {
     public abstract class GenericRepository<T> : IGenericRepository<T> where T: class
     {
-        protected readonly EventoContext _context;
-        public GenericRepository(EventoContext context)
+        protected readonly ProAgilContext _context;
+        public GenericRepository(ProAgilContext context)
         {
             _context = context;
             _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;

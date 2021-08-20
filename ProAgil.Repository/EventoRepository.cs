@@ -9,10 +9,7 @@ namespace ProAgil.Repository
 {
     public class EventoRepository : GenericRepository<Evento>, IEventoRepository
     {        
-        public EventoRepository(EventoContext context): base(context)
-        {
-            
-        }
+        public EventoRepository(ProAgilContext context): base(context) { }
 
         /// <summary>
         /// Get all events.

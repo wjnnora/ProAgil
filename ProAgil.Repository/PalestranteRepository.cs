@@ -9,10 +9,8 @@ namespace ProAgil.Repository
 {
     public class PalestranteRepository : GenericRepository<Palestrante>, IPalestranteRepository
     {
-        public PalestranteRepository(EventoContext context): base(context)
-        {
-            
-        }
+        public PalestranteRepository(ProAgilContext context): base(context) { }
+        
         public async Task<IEnumerable<Palestrante>> GetAllPalestrantesAsync()
         {
             IQueryable<Palestrante> query = _context.Palestrantes                

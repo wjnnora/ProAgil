@@ -9,10 +9,8 @@ namespace ProAgil.Repository
 {
     public class LoteRepository : GenericRepository<Lote>, ILoteRepository
     {
-        public LoteRepository(EventoContext context): base(context)
-        {
-            
-        }
+        public LoteRepository(ProAgilContext context): base(context) { }
+        
         public async Task<IEnumerable<Lote>> GetAllLotesAsync()
         {
             IQueryable<Lote> query = _context.Lotes;

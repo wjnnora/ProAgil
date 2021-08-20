@@ -3,9 +3,9 @@ using ProAgil.Domain;
 
 namespace ProAgil.Repository
 {
-    public class EventoContext: DbContext
+    public class ProAgilContext: DbContext
     {    
-        public EventoContext(DbContextOptions<EventoContext> options) : base(options) {}        
+        public ProAgilContext(DbContextOptions<ProAgilContext> options) : base(options) {}        
 
         public DbSet<Evento> Eventos { get; set; }    
         public DbSet<Palestrante> Palestrantes { get; set; }                

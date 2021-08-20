@@ -9,10 +9,7 @@ namespace ProAgil.Repository
 {
     public class RedesSociaisRepository: GenericRepository<RedeSocial>, IRedesSociaisRepository
     {
-        public RedesSociaisRepository(EventoContext context): base(context)
-        {
-            
-        }
+        public RedesSociaisRepository(ProAgilContext context): base(context) { }
 
         public async Task<IEnumerable<RedeSocial>> GetAllRedesSociaisAsync()
         {
