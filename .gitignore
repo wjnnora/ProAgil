@@ -488,3 +488,6 @@ Thumbs.db
 
 # Banco de dados
 Sqlite/ProAgil.db
+
+# Imagens API
+ProAgil.Api/Resources/Images
