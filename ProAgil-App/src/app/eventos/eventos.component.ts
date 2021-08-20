@@ -15,16 +15,17 @@ defineLocale('pt-br', ptBrLocale);
 })
   
 export class EventosComponent implements OnInit {
+  
   titulo = 'Evento';
   eventos: Evento[] = [];
-  evento: Evento;
+  evento: any;
   eventosFiltrados: Evento[];
   file: File;
   showImg = true;  
   _filtroBuscar: string;
-  registerForm: any;
-  saveMode: string;
+  registerForm: any;  
   mensagemExcluir: string;
+  currentImageName: string;
 
   constructor(private eventoService: EventoService, private modalService: BsModalService,
     private fb: FormBuilder, private localeService: BsLocaleService, private toastr: ToastrService) {    
@@ -77,22 +78,26 @@ export class EventosComponent implements OnInit {
     );
   }
 
-  openModal(template: any) {
+  openModal(template: any, openToDelete: boolean = false) {
+    if (!openToDelete) {
+      this.evento = null;      
+    }
     this.registerForm.reset();
     template.show(template);
   }
 
   editarEvento(evento: Evento, template: any) {
-    this.openModal(template);
-    this.evento = evento;
-    this.registerForm.patchValue(evento);
-    this.saveMode = 'put';
+    this.openModal(template);    
+    this.evento = Object.assign({}, evento);
+    this.currentImageName = this.evento.imagePath.toString();
+    this.evento.imagePath = '';
+    this.registerForm.patchValue(this.evento);        
   }
 
   openModalExcluir(evento: Evento, template: any) {
     this.evento = evento;
     this.mensagemExcluir = `Tem certeza que deseja excluir o evento ${evento.tema.toUpperCase()}?`;
-    this.openModal(template);
+    this.openModal(template, true);
   }
 
   excluirEvento(eventoId: number, template: any) {
@@ -107,19 +112,22 @@ export class EventosComponent implements OnInit {
     )
   }
 
-  salvarAlteracao(template: any) {
-    if (this.registerForm.valid) {      
-      if (this.saveMode === 'put') {
-        this.evento = Object.assign({ id: this.evento.id }, this.registerForm.value);
-        
-        this.eventoService.postUpload(this.file).subscribe();
-        const nomeArquivo = this.evento.imagePath.split("\\", 3);
-        this.evento.imagePath = nomeArquivo[2];
+  uploadImage() {
+    const nomeArquivo = this.evento.imagePath.split("\\", 3);
+    this.evento.imagePath = nomeArquivo[2];
+    this.eventoService.postUpload(this.file, this.evento.imagePath).subscribe();    
+  }
 
+  salvarAlteracao(template: any) {    
+    if (this.registerForm.valid) {      
+      if (this.evento != null) {        
+        this.evento = Object.assign({ id: this.evento.id }, this.registerForm.value);        
+        this.uploadImage();
         this.eventoService.updateEvento(this.evento).subscribe(
-          response => {
+          () => {
             this.toastr.success("Evento atualizado com sucesso.");
             template.hide();
+            this.evento = null;
             this.getEventos();
           }, error => {
             this.toastr.error(`Erro ao atualizar o evento: ${error}`);            
@@ -127,16 +135,14 @@ export class EventosComponent implements OnInit {
         );
       }
       else {
+        console.log("Salvando...");
         this.evento = Object.assign({}, this.registerForm.value);
-
-        this.eventoService.postUpload(this.file).subscribe();
-        const nomeArquivo = this.evento.imagePath.split("\\", 3);
-        this.evento.imagePath = nomeArquivo[2];
-        
+        this.uploadImage();
         this.eventoService.insertEvento(this.evento).subscribe(
-          response => {
+          () => {
             this.toastr.success("Evento inserido com sucesso.");
             template.hide();
+            this.evento = null;
             this.getEventos();
           }, error => {
             this.toastr.error(`Erro ao inserir o evento: ${error}`);            
@@ -147,8 +153,6 @@ export class EventosComponent implements OnInit {
   }
 
   onFileChange(event: any) {
-    const reader = new FileReader();
-
     if (event.target.files && event.target.files.length) {
       this.file = event.target.files[0];      
     }
