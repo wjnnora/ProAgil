@@ -35,10 +35,10 @@ export class EventoService {
     return this.http.delete<Evento>(`${environment.apiUrl}/evento/${eventoId}`)
   }
 
-  postUpload(file: File) {
+  postUpload(file: File, fileName: string) {
     const fileToUpload = <File>file;
     const formData = new FormData();    
-    formData.append('file', fileToUpload, fileToUpload.name);    
+    formData.append('file', fileToUpload, fileName);    
     return this.http.post(`${environment.apiUrl}/evento/upload/`, formData);
   }
 }
