@@ -1,7 +1,9 @@
 using System.Linq;
 using AutoMapper;
 using ProAgil.Api.DTO;
+using ProAgil.Api.DTO.User;
 using ProAgil.Domain;
+using ProAgil.Domain.Identity;
 
 namespace ProAgil.Api.AutoMapper
 {
@@ -19,6 +21,9 @@ namespace ProAgil.Api.AutoMapper
                     opt.MapFrom(src => src.PalestranteEventos.Select(x => x.Evento).ToList());
                 }).ReverseMap();
             CreateMap<RedeSocial, RedeSocialDTO>().ReverseMap();
+            CreateMap<User, UserDTO>().ReverseMap();
+            CreateMap<UserDTO, UserLoginDTO>().ReverseMap();
+            CreateMap<User, UserLoginDTO>().ReverseMap();
         }
     }
 }
