@@ -16,11 +16,11 @@ export class EventoService {
   }
 
   getEventoByTema(tema: string): Observable<Evento> {
-    return this.http.get<Evento>(`${environment.apiUrl}/evento/getbytema/${tema}`)
+    return this.http.get<Evento>(`${environment.apiUrl}/evento/getbytema/${tema}`);
   }
 
   getEventoById(id: number): Observable<Evento> {
-    return this.http.get<Evento>(`${environment.apiUrl}/evento/${id}`)
+    return this.http.get<Evento>(`${environment.apiUrl}/evento/${id}`);
   }
 
   insertEvento(evento: Evento): Observable<Evento> {    
@@ -32,7 +32,7 @@ export class EventoService {
   }
   
   deleteEvento(eventoId: number): Observable<Evento> {
-    return this.http.delete<Evento>(`${environment.apiUrl}/evento/${eventoId}`)
+    return this.http.delete<Evento>(`${environment.apiUrl}/evento/${eventoId}`);
   }
 
   postUpload(file: File, fileName: string) {
