@@ -18,8 +18,9 @@ export class AuthService {
     return this.http.post(`${environment.apiUrl}/user/login`, model).pipe(
       map((response: any) => {
         const user = response;        
-        if (user) {
+        if (user) {          
           localStorage.setItem('token', user.token);
+          localStorage.setItem('username', user.user.userName);
           this.decodeToken = this.jwtHelper.decodeToken(user.token);
         }
       })
