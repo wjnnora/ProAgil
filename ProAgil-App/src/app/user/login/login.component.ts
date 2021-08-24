@@ -1,7 +1,5 @@
-import { Login } from './../../_model/login';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormBuilder } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/_service/auth.service';
 
@@ -13,7 +11,6 @@ import { AuthService } from 'src/app/_service/auth.service';
 export class LoginComponent implements OnInit {
 
   titulo = 'Login';
-  credentials: Login;
 
   model: any = {};
 
