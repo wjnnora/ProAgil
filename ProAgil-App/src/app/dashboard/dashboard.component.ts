@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,9 +9,12 @@ import { Component, OnInit } from '@angular/core';
 export class DashboardComponent implements OnInit {
   titulo = 'Dashboard';
 
-  constructor() { }
+  constructor(private route: Router) { }
 
   ngOnInit() {
+    if (localStorage.getItem('token') === null) {
+      this.route.navigate(['/user/login']);
+    }
   }
 
 }
