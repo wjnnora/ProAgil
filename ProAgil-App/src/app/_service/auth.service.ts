@@ -17,7 +17,7 @@ export class AuthService {
   login(model: any) {
     return this.http.post(`${environment.apiUrl}/user/login`, model).pipe(
       map((response: any) => {
-        const user = response;
+        const user = response;        
         if (user) {
           localStorage.setItem('token', user.token);
           this.decodeToken = this.jwtHelper.decodeToken(user.token);
@@ -31,8 +31,8 @@ export class AuthService {
   }
 
   loggedIn() {
-    const token = JSON.parse(localStorage.getItem('token')!);
-    return !this.jwtHelper.isTokenExpired(token);
+    const token = localStorage.getItem('token');    
+    return !this.jwtHelper.isTokenExpired(token!);
   }
 
 }
