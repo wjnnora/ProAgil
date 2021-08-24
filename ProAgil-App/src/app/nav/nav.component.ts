@@ -10,9 +10,12 @@ import { Router } from '@angular/router';
 })
 export class NavComponent implements OnInit {
 
+  username: any;
+
   constructor(private route: Router, private toastr: ToastrService, public authService: AuthService) { }
 
   ngOnInit() {
+    this.username = localStorage.getItem('username');
   }
 
   loggedIn() {
@@ -20,7 +23,7 @@ export class NavComponent implements OnInit {
   }
 
   logout() {
-    localStorage.removeItem('token');
+    localStorage.clear();
     this.toastr.success('Deslogado com sucesso.');
     this.route.navigate(['/user/login']);
   }
