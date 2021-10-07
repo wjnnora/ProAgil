@@ -1,3 +1,4 @@
+import { EventoEditarComponent } from './eventos/evento-editar/evento-editar.component';
 import { AuthService } from 'src/app/_service/auth.service';
 import { ContatosComponent } from './contatos/contatos.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -17,6 +18,7 @@ const routes: Routes = [
       { path: 'registration', component: RegistrationComponent }
   ] },
   { path: 'eventos', component: EventosComponent, canActivate: [AuthGuard] },
+  { path: 'evento/:id/editar', component: EventoEditarComponent, canActivate: [AuthGuard] },
   { path: 'palestrantes', component: PalestrantesComponent, canActivate: [AuthGuard]  },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]  },
   { path: 'contatos', component: ContatosComponent, canActivate: [AuthGuard]  },
