@@ -29,7 +29,7 @@
             </div>
             <div class="form-group col-md-4 mb-2">
               <label>Data e Hora</label>
-              <input type="text" class="form-control" [(ngModel)]="evento.dataEvento" bsDatepicker value="{{evento.dataEvento | datetimeformatpipe}}" [(ngModel)]="evento.dataEvento" [bsConfig]="{ dateInputFormat : 'DD/MM/YYYY hh:mm' }" [ngClass]="{'is-invalid': registerForm.get('dataEvento').errors && registerForm.get('dataEvento').touched}" formControlName="dataEvento" placeholder="">
+              <input type="text" class="form-control" [(ngModel)]="evento.dataEvento" bsDatepicker value="{{evento.dataEvento}}" [(ngModel)]="evento.dataEvento" [bsConfig]="{ dateInputFormat : 'DD/MM/YYYY hh:mm' }" [ngClass]="{'is-invalid': registerForm.get('dataEvento').errors && registerForm.get('dataEvento').touched}" formControlName="dataEvento" placeholder="">
               <div *ngIf="registerForm.get('dataEvento').hasError('required') && registerForm.get('dataEvento').touched" class="invalid-feedback">
                 Data e hora é obrigatório.
               </div>
@@ -69,11 +69,11 @@
         </tab>
         <tab heading="Lotes">
           <div>
-            <div >        
-              <fieldset formGroupName="lotes" class="form-group">
+            <div formArrayName="lotes" *ngFor="let lote of lotes.controls; let i = index">        
+              <fieldset [formGroupName]="i" class="form-group">
                 <legend class="d-flex justify-content-between capitalize">
                   {{'Lotes'}}
-                  <button class="btn btn-sm btn-warning mb-1">remove</button>
+                  <button (click)="removerLote(i)" class="btn btn-sm btn-warning mb-1">remove</button>
                 </legend>
                 <div class="row">
                   <div class="form-group col-md-12 mb-2">
@@ -99,16 +99,16 @@
                 </div>
               </fieldset>      
             </div>
-            <button class="btn btn-outline-primary mt-2">
+            <button (click)="adicionarLote()" class="btn btn-outline-primary mt-2">
               Adicionar Lote
             </button>
           </div>
         </tab>
-        <tab heading="Redes Sociais">
-          <div>         
-            <fieldset formGroupName="redesSociais" class="form-group">
+        <tab heading="Redes Sociais">          
+          <div formArrayName="redesSociais" *ngFor="let redeSocial of redesSociais.controls; let i = index">         
+            <fieldset [formGroupName]="i" class="form-group">
               <legend class="d-flex justify-content-between capitalize">
-                <button class="btn btn-sm btn-warning mb-1"
+                <button (click)="removerRedeSocial(i)" class="btn btn-sm btn-warning mb-1"
                   >remove</button>
               </legend>
               <div class="row">
@@ -136,7 +136,7 @@
               </div>
             </fieldset>   
           </div>
-          <button class="btn btn-outline-primary mt-2">
+          <button (click)="adicionarRedeSocial()" class="btn btn-outline-primary mt-2">
             Adicionar Rede Social
           </button>
         </tab>
@@ -156,14 +156,14 @@
       </div>
       <div class="card profile-card-2">
         <div class="card-img-block">
-          <img [src]="imagemURL" class="img-fluid" (click)="file.click()" style="cursor: pointer; width: 350px;" alt="Card image cap" />
+          <img [src]="imagemURL" class="img-fluid" (click)="file.click()" style="cursor: pointer; width: 450px;" alt="Card image cap" />
         </div>
         <div class="card-body pt-3">
           <h4>{{evento.tema}}</h4>
           <p class="card-text">
             <b>Local:</b> {{evento.local}}
             <br>
-            <b>Data:</b> {{evento.dataEvento | datetimeformatpipe}}
+            <b>Data:</b> {{evento.dataEvento}}
           </p>
           <hr>
           <p class="card-text">
