@@ -57,8 +57,11 @@
             <button type="button" class="btn btn-danger btn-sm" tooltip="Excluir" (click)='openModalExcluir(evento, excluirTemplate)'>
               <i class="fa fa-eraser"></i>
             </button>
+            <a [routerLink]="['/evento', evento.id, 'editar']" class="btn btn-warning btn-sm" tooltip="Edição Detalhada">
+              <i class="fa fa-edit"></i>
+            </a>
           </div>          
-        </td>
+        </td>        
       </tr>
     </tbody>
     <tfoot *ngIf="!eventos.length">
