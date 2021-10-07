@@ -1,8 +1,8 @@
 import { Observable } from 'rxjs';
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
-import { Injectable} from "@angular/core";
-import { Router } from "@angular/router";
-import { tap } from "rxjs/internal/operators/tap";
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { Injectable} from '@angular/core';
+import { Router } from '@angular/router';
+import { tap } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class AuthInterceptor implements HttpInterceptor {
