@@ -57,7 +57,11 @@ import { RegistrationComponent } from './user/registration/registration.componen
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,        
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot({
+      progressBar: true,
+      timeOut: 2000,
+      closeButton: true
+    }),
     NgxMaskModule.forRoot()
   ],
   providers: [
