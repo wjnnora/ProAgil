@@ -5,7 +5,7 @@ import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
 import { defineLocale, ptBrLocale } from 'ngx-bootstrap/chronos';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { ToastrService } from 'ngx-toastr';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 defineLocale('pt-br', ptBrLocale);
 
 @Component({
@@ -21,7 +21,12 @@ export class EventoEditarComponent implements OnInit {
   imagemURL = 'assets/img/upload.png';
   currentImageName: string;
 
-  constructor(private eventoService: EventoService, private fb: FormBuilder, private localeService: BsLocaleService, private toastr: ToastrService, private router: ActivatedRoute) {    
+  constructor(private eventoService: EventoService,
+    private fb: FormBuilder,
+    private localeService: BsLocaleService,
+    private toastr: ToastrService,
+    private activatedRouter: ActivatedRoute,
+    private router: Router) {
     this.localeService.use('pt-br');    
   }
 
@@ -53,17 +58,23 @@ export class EventoEditarComponent implements OnInit {
   }
 
   carregarEvento() {
-    const idEvento = this.router.snapshot.paramMap.get('id');
+    const idEvento = this.activatedRouter.snapshot.paramMap.get('id');
     if (idEvento) {
       this.eventoService.getEventoById(+idEvento)
         .subscribe(
           (evento: Evento) => {
-            console.log(evento);
-            this.evento = Object.assign({}, evento);
-            this.currentImageName = this.evento.imagePath.toString();
-            this.evento.imagePath = '';
-            this.imagemURL = `http://localhost:5000/resources/images/${evento.imagePath}`;
-            this.registerForm.patchValue(this.evento);
+            if (evento) {
+              console.log(evento);
+              this.evento = Object.assign({}, evento);
+              this.currentImageName = this.evento.imagePath.toString();
+              this.evento.imagePath = '';
+              this.imagemURL = `http://localhost:5000/resources/images/${evento.imagePath}`;
+              this.registerForm.patchValue(this.evento);
+            }
+            else {
+              this.toastr.error('Evento não encontrado.');
+              this.router.navigate(['/eventos']);
+            }
           },
           () => {
             this.toastr.error('Erro ao carregar o evento.');
