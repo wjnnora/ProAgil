@@ -45,6 +45,7 @@ export class EventoEditarComponent implements OnInit {
 
   validation() {
     this.registerForm = this.fb.group({
+      id: [''],
       tema: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
       local: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
       dataEvento: ['',  [Validators.required]],
@@ -63,13 +64,18 @@ export class EventoEditarComponent implements OnInit {
       this.eventoService.getEventoById(+idEvento)
         .subscribe(
           (evento: Evento) => {
-            if (evento) {
-              console.log(evento);
+            if (evento) {              
               this.evento = Object.assign({}, evento);
               this.currentImageName = this.evento.imagePath.toString();
               this.evento.imagePath = '';
               this.imagemURL = `http://localhost:5000/resources/images/${evento.imagePath}`;
               this.registerForm.patchValue(this.evento);
+              this.evento.lotes.forEach(lote => {
+                this.lotes.push(this.criarLote(lote));
+              });
+              this.evento.redesSociais.forEach(redeSocial => {
+                this.redesSociais.push(this.criarRedeSocial(redeSocial));
+              })
             }
             else {
               this.toastr.error('Evento não encontrado.');
@@ -83,20 +89,21 @@ export class EventoEditarComponent implements OnInit {
     }    
   }
 
-  criarLote(): FormGroup {
+  criarLote(lote?: any): FormGroup {
     return this.fb.group({
-      nome: ['', [Validators.required]],
-      quantidade: ['', [Validators.required]],
-      preco: ['', [Validators.required]],
-      dataInicio: [''],
-      dataFim: ['']
+      nome: [lote ? lote.nome : '', [Validators.required]],
+      quantidade: [lote ? lote.quantidade : '', [Validators.required]],
+      preco: [lote ? lote.preco : '', [Validators.required]],
+      dataInicio: [lote ? lote.dataInicio : ''],
+      dataFim: [lote ? lote.dataFim : '']
     });
   }
 
-  criarRedeSocial(): FormGroup {
+  criarRedeSocial(redeSocial?: any): FormGroup {
     return this.fb.group({
-      nome: ['', [Validators.required]],
-      url: ['', [Validators.required]]
+      id: [redeSocial ? redeSocial.id : ''],
+      nome: [redeSocial ? redeSocial.nome : '', [Validators.required]],
+      url: [redeSocial ? redeSocial.url : '', [Validators.required]]
     });
   }
 
