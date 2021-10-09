@@ -20,6 +20,7 @@ export class EventoEditarComponent implements OnInit {
   evento: Evento = new Evento();  
   imagemURL = 'assets/img/upload.png';
   currentImageName: string;
+  file: File;
 
   constructor(private eventoService: EventoService,
     private fb: FormBuilder,
@@ -53,8 +54,8 @@ export class EventoEditarComponent implements OnInit {
       imagePath: [''],
       telefone: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-      lotes: this.fb.array([this.criarLote()]),
-      redesSociais: this.fb.array([this.criarRedeSocial()])
+      lotes: this.fb.array([]),
+      redesSociais: this.fb.array([])
     })
   }
 
@@ -111,13 +112,8 @@ export class EventoEditarComponent implements OnInit {
     this.lotes.push(this.criarLote());
   }
 
-  removerLote(id: number) {
-    if (this.lotes.length > 1) {
+  removerLote(id: number) {    
       this.lotes.removeAt(id)
-    }
-    else {
-      this.toastr.warning('O formulário não pode ser removido.')
-    }
   }
 
   adicionarRedeSocial() {
@@ -125,19 +121,36 @@ export class EventoEditarComponent implements OnInit {
   }
 
   removerRedeSocial(id: number) {
-    if (this.redesSociais.length > 1) {
-      this.redesSociais.removeAt(id)
-    }
-    else {
-      this.toastr.warning('O formulário não pode ser removido.')
-    }
-    
+    this.redesSociais.removeAt(id)
   }
   
   onFileChange(eventTarget: any) {    
     const reader = new FileReader();
-    reader.onload = (event: any) => this.imagemURL = event.target.result;
-    reader.readAsDataURL(eventTarget.target.files[0]);
+    this.file = eventTarget.target.files[0];    
+    reader.onload = (event: any) => this.imagemURL = event.target.result;    
+    reader.readAsDataURL(this.file);
+  }
+  
+  uploadImagem() {
+    if (this.registerForm.get("imagePath").value !== '') {
+      const nomeArquivo = this.evento.imagePath.split("\\", 3);
+      this.evento.imagePath = nomeArquivo[2];      
+      this.eventoService.postUpload(this.file, this.evento.imagePath).subscribe();
+    }
+  }
+
+  salvarEvento() {
+    this.evento = Object.assign({ id: this.evento.id }, this.registerForm.value);    
+    this.evento.imagePath = this.registerForm.get('imagePath').value !== '' ? this.registerForm.get('imagePath').value : this.currentImageName;
+    this.uploadImagem();
+    this.eventoService.updateEvento(this.evento).subscribe(
+      () => {
+        this.toastr.success("Evento atualizado com sucesso.");        
+        this.router.navigate(['/eventos']);
+      }, error => {
+        this.toastr.error(`Erro ao atualizar o evento: ${error}`);            
+      }
+    );
   }
 
 }
