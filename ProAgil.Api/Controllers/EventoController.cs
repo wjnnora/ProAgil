@@ -21,11 +21,15 @@ namespace ProAgil.Api.Controllers
     public class EventoController : ControllerBase
     {        
         private IEventoRepository _eventoRepository;
+        private ILoteRepository _loteRepository;
+        private IRedesSociaisRepository _redesSociaisRepository;
         private IMapper _mapper;
 
-        public EventoController(IEventoRepository eventoRepository, IMapper mapper)
+        public EventoController(IEventoRepository eventoRepository, ILoteRepository loteRepository, IRedesSociaisRepository redesSociaisRepository, IMapper mapper)
         {   
             _eventoRepository = eventoRepository;
+            _loteRepository = loteRepository;
+            _redesSociaisRepository = redesSociaisRepository;
             _mapper = mapper;
         }
 
@@ -128,6 +132,16 @@ namespace ProAgil.Api.Controllers
             try
             {
                 Evento evento = await _eventoRepository.GetEventoByIdAsync(id);
+
+                var idsLotes = eventoDTO.Lotes.Select(x => x.Id).ToList();
+                var idsRedesSociais = eventoDTO.RedesSociais.Select(x => x.Id).ToList();
+
+                var lotes = evento.Lotes.Where(lote => !idsLotes.Contains(lote.Id));
+                var redesSociais = evento.RedesSociais.Where(redeSocial => !idsRedesSociais.Contains(redeSocial.Id));
+
+                
+
+
                 if (evento != null)
                 {
                     _mapper.Map(eventoDTO, evento);
