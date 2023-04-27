@@ -1,7 +1,8 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+
 using ProAgil.Domain;
 using ProAgil.Repository.Context;
 using ProAgil.Repository.Interfaces;
