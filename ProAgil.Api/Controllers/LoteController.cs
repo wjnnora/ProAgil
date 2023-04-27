@@ -1,11 +1,12 @@
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using ProAgil.Api.DTO;
+using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+
 using ProAgil.Domain;
+using ProAgil.Api.DTO;
 using ProAgil.Repository.Interfaces;
 
 namespace ProAgil.Api.Controllers
@@ -14,14 +15,13 @@ namespace ProAgil.Api.Controllers
     [Route("api/[controller]")]
     public class LoteController: ControllerBase
     {
-        private readonly ILoteRepository _loteRepository;
-        private readonly IEventoRepository _eventoRepository;
         private readonly IMapper _mapper;
-        public LoteController(ILoteRepository loteRepository, IEventoRepository eventoRepository, IMapper mapper)
+        private readonly ILoteRepository _loteRepository;        
+
+        public LoteController(IMapper mapper, ILoteRepository loteRepository)
         {
-            _loteRepository = loteRepository;
-            _eventoRepository = eventoRepository;
             _mapper = mapper;
+            _loteRepository = loteRepository;            
         }
 
         [HttpGet]
@@ -29,94 +29,94 @@ namespace ProAgil.Api.Controllers
         {
             try
             {
-                IEnumerable<Lote> lotes = await _loteRepository.GetAllLotesAsync();
-                IEnumerable<LoteDTO> lotesDTO = _mapper.Map<IEnumerable<LoteDTO>>(lotes);
+                var lotes = await _loteRepository.GetAllLotesAsync();
+                var lotesDTO = _mapper.Map<IEnumerable<LoteDTO>>(lotes);
+
                 return Ok(lotesDTO);
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get([FromRoute] int id)
         {
             try
             {
-                Lote lote = await _loteRepository.GetLoteByIdAsync(id);
-                LoteDTO loteDTO = _mapper.Map<LoteDTO>(lote);
-                if (loteDTO != null)
-                {
-                    return Ok(loteDTO);
-                }
-                return NotFound();
+                var lote = await _loteRepository.GetLoteByIdAsync(id);
+
+                if (lote is null)
+                    return NotFound();
+
+                var loteDTO = _mapper.Map<LoteDTO>(lote);
+
+                return Ok(loteDTO);
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(LoteDTO loteDTO)
+        public async Task<IActionResult> Post([FromBody] LoteDTO loteDTO)
         {
             try
             {
-                Lote lote = _mapper.Map<Lote>(loteDTO);
+                var lote = _mapper.Map<Lote>(loteDTO);
                 lote = await _loteRepository.Insert(lote);
-                _mapper.Map(lote, loteDTO);                
+                _mapper.Map(lote, loteDTO);             
+                
                 return Created($"api/lote/{loteDTO.Id}", loteDTO); 
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, LoteDTO loteDTO)
+        public async Task<IActionResult> Put([FromRoute] int id, [FromBody] LoteDTO loteDTO)
         {
             try
             {
-                Lote lote = await _loteRepository.GetLoteByIdAsync(id);
-                if (lote != null)
-                {
-                    _mapper.Map(loteDTO, lote);
-                    lote = await _loteRepository.Update(lote);
-                    _mapper.Map(lote, loteDTO);                    
-                    return Created($"api/evento/{loteDTO.Id}", loteDTO);
-                }
+                var lote = await _loteRepository.GetLoteByIdAsync(id);
 
-                return NotFound();
+                if (lote is null)
+                    return NotFound();
+
+                _mapper.Map(loteDTO, lote);
+                lote = await _loteRepository.Update(lote);
+                _mapper.Map(lote, loteDTO);
+
+                return Created($"api/evento/{loteDTO.Id}", loteDTO);
+
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
             try
             {
-                Lote lote = await _loteRepository.GetLoteByIdAsync(id);
-                if (lote != null)
-                {   
-                    if (await _loteRepository.Delete(lote))
-                    {
-                        return NoContent();
-                    }
+                var lote = await _loteRepository.GetLoteByIdAsync(id);
 
-                    throw new Exception();
-                }
+                if (lote is null)
+                    return NotFound();
 
-                return NotFound();
+                await _loteRepository.Delete(lote);
+                
+                return NoContent();                
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
     }

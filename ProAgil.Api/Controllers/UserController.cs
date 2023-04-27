@@ -1,17 +1,18 @@
 using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+using System.Text;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
+
 using ProAgil.Api.DTO.User;
 using ProAgil.Domain.Identity;
 
@@ -21,22 +22,19 @@ namespace ProAgil.Api.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IConfiguration _config;
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _config;
+        private readonly UserManager<User> _userManager;        
 
-        public UserController(IConfiguration config, UserManager<User> userManager, SignInManager<User> signInManager, IMapper mapper)
+        public UserController(IMapper mapper, IConfiguration config, UserManager<User> userManager)
         {
-            _config = config;
-            _userManager = userManager;
-            _signInManager = signInManager;
             _mapper = mapper;
+            _config = config;
+            _userManager = userManager;            
         }
 
-
         [HttpGet]
-        public IActionResult Get(UserDTO userDTO) 
+        public IActionResult Get([FromQuery] UserDTO userDTO) 
         {            
             return Ok(userDTO);
         }        
@@ -44,53 +42,46 @@ namespace ProAgil.Api.Controllers
 
         [HttpPost("Register")]
         [AllowAnonymous]
-        public async Task<IActionResult> Post(UserDTO userDTO) 
+        public async Task<IActionResult> Post([FromBody] UserDTO userDTO) 
         { 
             try
             {
-                User user = _mapper.Map<User>(userDTO);
+                var user = _mapper.Map<User>(userDTO);
                 var result = await _userManager.CreateAsync(user, userDTO.Password);
-                userDTO = _mapper.Map<UserDTO>(user);
+                userDTO = _mapper.Map<UserDTO>(user);                
 
-                if (result.Succeeded) 
-                {
+                if (result.Succeeded)
                     return Created($"/api/user/", userDTO);
-                }
 
                 return BadRequest(result.Errors);
             }
             catch(Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 
         [HttpPost("Login")]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(UserLoginDTO userLoginDTO) 
+        public async Task<IActionResult> Login([FromBody] UserLoginDTO userLoginDTO) 
         { 
             try
             {
                 var user = await _userManager.FindByNameAsync(userLoginDTO.UserName);
                 var correctPassword = await _userManager.CheckPasswordAsync(user, userLoginDTO.Password);
 
-                if (correctPassword) 
-                {
-                    var appUser = await _userManager.Users.FirstOrDefaultAsync(u => u.NormalizedUserName == userLoginDTO.UserName.ToUpper());
-                    var appUserToReturn = _mapper.Map<UserLoginDTO>(appUser);
-                    var userToken = new
-                    {
-                        token = GenerateJWT(appUser).Result,
-                        user = appUserToReturn
-                    };
-                    return Ok(userToken);
-                }
+                if (!correctPassword)
+                    return Unauthorized();
 
-                return Unauthorized();
+                var appUser = await _userManager.Users.FirstOrDefaultAsync(u => u.NormalizedUserName == userLoginDTO.UserName.ToUpper());
+                var appUserToReturn = _mapper.Map<UserLoginDTO>(appUser);
+                var userToken = new { token = GenerateJWT(appUser).Result, user = appUserToReturn };
+
+                return Ok(userToken);
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 

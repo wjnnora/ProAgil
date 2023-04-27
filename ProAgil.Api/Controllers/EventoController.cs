@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using ProAgil.Api.DTO;
+using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+
 using ProAgil.Domain;
-using ProAgil.Repository;
+using ProAgil.Api.DTO;
 using ProAgil.Repository.Interfaces;
 
 namespace ProAgil.Api.Controllers
@@ -20,17 +18,13 @@ namespace ProAgil.Api.Controllers
     [Route("api/[controller]")]
     public class EventoController : ControllerBase
     {        
-        private IEventoRepository _eventoRepository;
-        private ILoteRepository _loteRepository;
-        private IRedesSociaisRepository _redesSociaisRepository;
         private IMapper _mapper;
+        private IEventoRepository _eventoRepository;        
 
-        public EventoController(IEventoRepository eventoRepository, ILoteRepository loteRepository, IRedesSociaisRepository redesSociaisRepository, IMapper mapper)
+        public EventoController(IMapper mapper, IEventoRepository eventoRepository)
         {   
-            _eventoRepository = eventoRepository;
-            _loteRepository = loteRepository;
-            _redesSociaisRepository = redesSociaisRepository;
             _mapper = mapper;
+            _eventoRepository = eventoRepository;            
         }
 
         [HttpGet]
@@ -38,52 +32,54 @@ namespace ProAgil.Api.Controllers
         {
             try
             {
-                IEnumerable<Evento> eventos = await _eventoRepository.GetAllEventosAsync();
-                IEnumerable<EventoDTO> eventosDTO = _mapper.Map<IEnumerable<EventoDTO>>(eventos);
+                var eventos = await _eventoRepository.GetAllEventosAsync();
+                var eventosDTO = _mapper.Map<IEnumerable<EventoDTO>>(eventos);
+
                 return Ok(eventosDTO);
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor");
             }
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get([FromRoute] int id)
         {
             try
             {
-                Evento evento = await _eventoRepository.GetEventoByIdAsync(id);
-                EventoDTO eventoDTO = _mapper.Map<EventoDTO>(evento);
+                var evento = await _eventoRepository.GetEventoByIdAsync(id);
+                var eventoDTO = _mapper.Map<EventoDTO>(evento);
+
                 return Ok(eventoDTO);
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 
         [HttpGet("getByTema/{tema}")]            
-        public async Task<IActionResult> Get(string tema)
+        public async Task<IActionResult> Get([FromRoute] string tema)
         {
             try
             {
-                Evento evento = await _eventoRepository.GetEventosByTemaAsync(tema);
-                EventoDTO eventoDTO = _mapper.Map<EventoDTO>(evento);
-                if (eventoDTO != null)
-                {
+                var evento = await _eventoRepository.GetEventosByTemaAsync(tema);
+                var eventoDTO = _mapper.Map<EventoDTO>(evento);
+
+                if (eventoDTO is not null)
                     return Ok(eventoDTO);
-                }
+
                 return NotFound();
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 
         [HttpPost("upload")]
-        public IActionResult upload() 
+        public IActionResult Upload() 
         { 
             try
             {
@@ -97,50 +93,47 @@ namespace ProAgil.Api.Controllers
                     fileNameToSave = fileNameToSave.Replace("\"", "").Trim();                    
                     string fullPathToSave = Path.Combine(fullPath, fileNameToSave);                    
 
-                    using (var stream = new FileStream(fullPathToSave, FileMode.Create)) 
-                    {                                                
+                    using (var stream = new FileStream(fullPathToSave, FileMode.Create))
                         file.CopyTo(stream);
-                    }
                 }
+
                 return Ok();
             }
             catch (Exception)
             {                
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(EventoDTO eventoDTO)
+        public async Task<IActionResult> Post([FromBody] EventoDTO eventoDTO)
         {
             try
             {
-                Evento evento = _mapper.Map<Evento>(eventoDTO);
+                var evento = _mapper.Map<Evento>(eventoDTO);
                 evento = await _eventoRepository.Insert(evento);
                 _mapper.Map(evento, eventoDTO);
+
                 return Created($"/api/evento/{eventoDTO.Id}", eventoDTO);
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, EventoDTO eventoDTO)
+        public async Task<IActionResult> Put([FromRoute] int id, [FromBody] EventoDTO eventoDTO)
         {
             try
             {
-                Evento evento = await _eventoRepository.GetEventoByIdAsync(id);
+                var evento = await _eventoRepository.GetEventoByIdAsync(id);
 
                 var idsLotes = eventoDTO.Lotes.Select(x => x.Id).ToList();
                 var idsRedesSociais = eventoDTO.RedesSociais.Select(x => x.Id).ToList();
 
                 var lotes = evento.Lotes.Where(lote => !idsLotes.Contains(lote.Id));
                 var redesSociais = evento.RedesSociais.Where(redeSocial => !idsRedesSociais.Contains(redeSocial.Id));
-
-                
-
 
                 if (evento != null)
                 {
@@ -155,31 +148,26 @@ namespace ProAgil.Api.Controllers
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
             try
             {
-                Evento evento = await _eventoRepository.GetEventoByIdAsync(id);
-                if (evento != null)
-                {
-                    if (await _eventoRepository.Delete(evento))
-                    {
-                        return NoContent();                        
-                    }
+                var evento = await _eventoRepository.GetEventoByIdAsync(id);
 
-                    throw new Exception();
-                }
+                if (evento is null)
+                    return NotFound();
 
-                return NotFound();
+                await _eventoRepository.Delete(evento);
+                return NoContent();                                
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
     }

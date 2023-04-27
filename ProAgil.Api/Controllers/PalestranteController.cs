@@ -1,11 +1,12 @@
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using ProAgil.Api.DTO;
+using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+
 using ProAgil.Domain;
+using ProAgil.Api.DTO;
 using ProAgil.Repository.Interfaces;
 
 namespace ProAgil.Api.Controllers
@@ -14,12 +15,13 @@ namespace ProAgil.Api.Controllers
     [Route("api/[controller]")]
     public class PalestranteController: ControllerBase
     {
-        private readonly IPalestranteRepository _palestranteRepository;
         private readonly IMapper _mapper;
-        public PalestranteController(IPalestranteRepository palestranteRepository, IMapper mapper)
+        private readonly IPalestranteRepository _palestranteRepository;
+
+        public PalestranteController(IMapper mapper, IPalestranteRepository palestranteRepository)
         {
-            _palestranteRepository = palestranteRepository;
             _mapper = mapper;
+            _palestranteRepository = palestranteRepository;
         }
 
         [HttpGet]
@@ -27,113 +29,113 @@ namespace ProAgil.Api.Controllers
         {
             try
             {
-                IEnumerable<Palestrante> palestrantes = await _palestranteRepository.GetAllPalestrantesAsync();
-                IEnumerable<PalestranteDTO> palestrantesDTO = _mapper.Map<IEnumerable<PalestranteDTO>>(palestrantes);
+                var palestrantes = await _palestranteRepository.GetAllPalestrantesAsync();
+                var palestrantesDTO = _mapper.Map<IEnumerable<PalestranteDTO>>(palestrantes);
+
                 return Ok(palestrantesDTO);
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 
         [HttpGet("{id}")]        
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get([FromRoute] int id)
         {
             try
             {
-                Palestrante palestrante = await _palestranteRepository.GetPalestranteByIdAsync(id);
-                PalestranteDTO palestranteDTO = _mapper.Map<PalestranteDTO>(palestrante);
-                if (palestranteDTO != null)
-                {
-                    return Ok(palestranteDTO);
-                }
-                return NotFound();
+                var palestrante = await _palestranteRepository.GetPalestranteByIdAsync(id);
+
+                if (palestrante is null)
+                    return NotFound();
+
+                var palestranteDTO = _mapper.Map<PalestranteDTO>(palestrante);
+
+                return Ok(palestranteDTO);                
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 
         [HttpGet("getByName/{nome}")]            
-        public async Task<IActionResult> Get(string nome)
+        public async Task<IActionResult> Get([FromRoute] string nome)
         {
             try
             {
-                Palestrante palestrante = await _palestranteRepository.GetPalestranteByNomeAsync(nome);
-                PalestranteDTO palestranteDTO = _mapper.Map<PalestranteDTO>(palestrante);
-                if (palestranteDTO != null)
-                {
-                    return Ok(palestranteDTO);
-                }
-                return NotFound();
+                var palestrante = await _palestranteRepository.GetPalestranteByNomeAsync(nome);
+
+                if (palestrante is null)
+                    return NotFound();
+
+                var palestranteDTO = _mapper.Map<PalestranteDTO>(palestrante);
+
+                return Ok(palestranteDTO);                
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(PalestranteDTO palestranteDTO)
+        public async Task<IActionResult> Post([FromBody] PalestranteDTO palestranteDTO)
         {
             try
             {
-                Palestrante palestrante = _mapper.Map<Palestrante>(palestranteDTO);
+                var palestrante = _mapper.Map<Palestrante>(palestranteDTO);
                 palestrante = await _palestranteRepository.Insert(palestrante);
-                _mapper.Map(palestrante, palestranteDTO);                
+                _mapper.Map(palestrante, palestranteDTO);         
+                
                 return Created($"api/palestrante/{palestranteDTO.Id}", palestranteDTO);
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, PalestranteDTO palestranteDTO)
+        public async Task<IActionResult> Put([FromRoute] int id, [FromBody] PalestranteDTO palestranteDTO)
         {
             try
             {
-                Palestrante palestrante = await _palestranteRepository.GetPalestranteByIdAsync(id);
-                if (palestrante != null)
-                {
-                    _mapper.Map(palestranteDTO, palestrante);
-                    palestrante = await _palestranteRepository.Update(palestrante);
-                    _mapper.Map(palestrante, palestranteDTO);   
+                var palestrante = await _palestranteRepository.GetPalestranteByIdAsync(id);
 
-                    return Created($"/api/palestrante/{palestranteDTO.Id}", palestranteDTO);                                     
-                }
+                if (palestrante is null)
+                    return NotFound();
 
-                return NotFound();
+                _mapper.Map(palestranteDTO, palestrante);
+                palestrante = await _palestranteRepository.Update(palestrante);
+                _mapper.Map(palestrante, palestranteDTO);
+
+                return Created($"/api/palestrante/{palestranteDTO.Id}", palestranteDTO);                
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
             try
             {
-                Palestrante palestrante = await _palestranteRepository.GetPalestranteByIdAsync(id);
-                if (palestrante != null)
-                {                    
-                    if (await _palestranteRepository.Delete(palestrante))
-                    {
-                        return NoContent();
-                    }
-                    throw new Exception();
-                }
+                var palestrante = await _palestranteRepository.GetPalestranteByIdAsync(id);
 
-                return NotFound();
+                if (palestrante is null)
+                    return NotFound();
+
+                await _palestranteRepository.Delete(palestrante);
+
+                return NoContent();                
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
     }

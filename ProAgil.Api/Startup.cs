@@ -1,20 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using ProAgil.Repository;
 using ProAgil.Repository.Interfaces;
-using AutoMapper;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
 using Microsoft.AspNetCore.Http;
@@ -22,11 +14,11 @@ using Microsoft.AspNetCore.Identity;
 using ProAgil.Domain.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.IdentityModel.Logging;
+using System;
 
 namespace ProAgil.Api
 {
@@ -64,8 +56,7 @@ namespace ProAgil.Api
                     .RequireAuthenticatedUser()
                     .Build();
                 opt.Filters.Add(new AuthorizeFilter(policy));
-            })
-            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+            })            
             .AddNewtonsoftJson(opt =>
             {
                 opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
@@ -88,7 +79,7 @@ namespace ProAgil.Api
             services.AddScoped<IPalestranteRepository, PalestranteRepository>();
             services.AddScoped<IRedesSociaisRepository, RedesSociaisRepository>();
             services.AddScoped<ILoteRepository, LoteRepository>();
-            services.AddAutoMapper();
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddControllers();            
         }
 

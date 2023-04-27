@@ -1,9 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+
 using ProAgil.Api.DTO;
 using ProAgil.Domain;
 using ProAgil.Repository.Interfaces;
@@ -14,12 +15,13 @@ namespace ProAgil.Api.Controllers
     [Route("api/[controller]")]
     public class RedeSocialController : ControllerBase
     {
-        private readonly IRedesSociaisRepository _redeSocialRepository;
         private readonly IMapper _mapper;
-        public RedeSocialController(IRedesSociaisRepository redeSocialRepository, IMapper mapper)
+        private readonly IRedesSociaisRepository _redeSocialRepository;
+
+        public RedeSocialController(IMapper mapper, IRedesSociaisRepository redeSocialRepository)
         {
-            _redeSocialRepository = redeSocialRepository;
             _mapper = mapper;
+            _redeSocialRepository = redeSocialRepository;
         }
 
         [HttpGet]
@@ -27,117 +29,114 @@ namespace ProAgil.Api.Controllers
         {
             try
             {
-                IEnumerable<RedeSocial> redesSociais = await _redeSocialRepository.GetAllRedesSociaisAsync();
-                IEnumerable<RedeSocialDTO> redesSociaisDTO = _mapper.Map<IEnumerable<RedeSocialDTO>>(redesSociais);
+                var redesSociais = await _redeSocialRepository.GetAllRedesSociaisAsync();
+                var redesSociaisDTO = _mapper.Map<IEnumerable<RedeSocialDTO>>(redesSociais);
+
                 return Ok(redesSociaisDTO);
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get([FromRoute] int id)
         {
             try
             {
-                RedeSocial redeSocial = await _redeSocialRepository.GetRedeSocialByIdAsync(id);
-                RedeSocialDTO redeSocialDTO = _mapper.Map<RedeSocialDTO>(redeSocial);
-                if (redeSocialDTO != null)
-                {
-                    return Ok(redeSocialDTO);
-                }
+                var redeSocial = await _redeSocialRepository.GetRedeSocialByIdAsync(id);
 
-                return NotFound();
+                if (redeSocial is null)
+                    return NotFound();
+
+                var redeSocialDTO = _mapper.Map<RedeSocialDTO>(redeSocial);
+
+                return Ok(redeSocialDTO);                
             }
             catch (Exception)
             {
-              return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+              return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 
         [HttpGet("getByName/{nome}")]
-        public async Task<IActionResult> Get(string nome)
+        public async Task<IActionResult> Get([FromRoute] string nome)
         {
             try
             {
-                RedeSocial redeSocial = await _redeSocialRepository.GetRedeSocialByNomeAsync(nome);
-                RedeSocialDTO redeSocialDTO = _mapper.Map<RedeSocialDTO>(redeSocial);
-                if (redeSocialDTO != null)
-                {
-                    return Ok(redeSocialDTO);
-                }
+                var redeSocial = await _redeSocialRepository.GetRedeSocialByNomeAsync(nome);
 
-                return NotFound();
+                if (redeSocial is null)
+                    return NotFound();
+
+                var redeSocialDTO = _mapper.Map<RedeSocialDTO>(redeSocial);
+
+                return Ok(redeSocialDTO);
             }
             catch (Exception)
             {
-              return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+              return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(RedeSocialDTO redeSocialDTO)
+        public async Task<IActionResult> Post([FromBody] RedeSocialDTO redeSocialDTO)
         {
             try
             {
-                RedeSocial redeSocial = _mapper.Map<RedeSocial>(redeSocialDTO);
+                var redeSocial = _mapper.Map<RedeSocial>(redeSocialDTO);
                 redeSocial = await _redeSocialRepository.Insert(redeSocial);
                 _mapper.Map(redeSocial, redeSocialDTO);
+
                 return Created($"api/redesocial/{redeSocialDTO.Id}", redeSocialDTO);
             }
             catch (Exception)
             {
-              return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+              return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, RedeSocialDTO redeSocialDTO)
+        public async Task<IActionResult> Put([FromRoute] int id, [FromBody] RedeSocialDTO redeSocialDTO)
         {
             try
             {
-                RedeSocial redeSocial = await _redeSocialRepository.GetRedeSocialByIdAsync(id);
-                if (redeSocial != null)
-                {
-                    _mapper.Map(redeSocialDTO, redeSocial);                    
-                    redeSocial = await _redeSocialRepository.Update(redeSocial);
-                    _mapper.Map(redeSocial, redeSocialDTO);
-                    return Created($"api/redesocial/{redeSocialDTO.Id}", redeSocialDTO);
-                }
+                var redeSocial = await _redeSocialRepository.GetRedeSocialByIdAsync(id);
 
-                return NotFound();
+                if (redeSocial is null)
+                    return NotFound();
+
+                _mapper.Map(redeSocialDTO, redeSocial);
+                redeSocial = await _redeSocialRepository.Update(redeSocial);
+                _mapper.Map(redeSocial, redeSocialDTO);
+
+                return Created($"api/redesocial/{redeSocialDTO.Id}", redeSocialDTO);                
             }
             catch (Exception)
             {
-               return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+               return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
             try
             {
-                RedeSocial redeSocial = await _redeSocialRepository.GetRedeSocialByIdAsync(id);
-                if (redeSocial != null)
-                {                    
-                    if (await _redeSocialRepository.Delete(redeSocial))
-                    {
-                        return NoContent();
-                    }
+                var redeSocial = await _redeSocialRepository.GetRedeSocialByIdAsync(id);
 
-                    throw new Exception();
-                }
+                if (redeSocial is null)
+                    return NotFound();
 
-                return NotFound();
+                await _redeSocialRepository.Delete(redeSocial);
+
+                return NoContent();                
             }
             catch (Exception)
             {
-               return this.StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
+               return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro no servidor.");
             }
         }
-
     }
 }
