@@ -23,7 +23,15 @@ namespace ProAgil.Api.Controllers.Lotes
             _loteRepository = loteRepository;
         }
 
+        /// <summary>
+        /// Retorna todos os lotes cadastrados
+        /// </summary>
+        /// <returns><see cref="LoteDTO"/>Lista de lotes</returns>
         [HttpGet]
+        [ProducesResponseType(typeof(LoteDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]        
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<IActionResult> Get()
         {
             try
@@ -39,7 +47,17 @@ namespace ProAgil.Api.Controllers.Lotes
             }
         }
 
+        /// <summary>
+        /// Retorna o lote do Id informado
+        /// </summary>
+        /// <param name="id">Id do lote</param>
+        /// <returns><see cref="LoteDTO"/>Lote do Id informado</returns>
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(LoteDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
             try

@@ -10,7 +10,16 @@ namespace ProAgil.Api.Controllers.RedesSociais
 {
     public partial class RedeSocialController : ControllerBase
     {
+        /// <summary>
+        /// Cria uma nova Rede Social
+        /// </summary>
+        /// <param name="redeSocialDTO">Informações da nova Rede Social</param>
+        /// <returns><see cref="RedeSocialDTO"/>Retorna a nova Rede Social cadastrada</returns>
         [HttpPost]
+        [ProducesResponseType(typeof(RedeSocialDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]        
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<IActionResult> Post([FromBody] RedeSocialDTO redeSocialDTO)
         {
             try

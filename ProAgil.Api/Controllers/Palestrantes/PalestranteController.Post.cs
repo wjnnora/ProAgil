@@ -10,7 +10,16 @@ namespace ProAgil.Api.Controllers.Palestrantes
 {
     public partial class PalestranteController : ControllerBase 
     {
+        /// <summary>
+        /// Cria um novo palestrante
+        /// </summary>
+        /// <param name="palestranteDTO">Informações do novo palestrante</param>
+        /// <returns><see cref="PalestranteDTO"/>Retorna o novo palestrante cadastrado</returns>
         [HttpPost]
+        [ProducesResponseType(typeof(PalestranteDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]        
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<IActionResult> Post([FromBody] PalestranteDTO palestranteDTO)
         {
             try

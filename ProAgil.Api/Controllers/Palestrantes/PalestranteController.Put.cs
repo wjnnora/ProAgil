@@ -9,7 +9,18 @@ namespace ProAgil.Api.Controllers.Palestrantes
 {
     public partial class PalestranteController : ControllerBase
     {
+        /// <summary>
+        /// Atualiza um palestrante
+        /// </summary>
+        /// <param name="id">Id do palestrante</param>
+        /// <param name="palestranteDTO">Novas informações do palestrante</param>
+        /// <returns><see cref="PalestranteDTO"/>Retorna o palestrante com as novas informações cadastradas</returns>
         [HttpPut("{id}")]
+        [ProducesResponseType(typeof(PalestranteDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<IActionResult> Put([FromRoute] int id, [FromBody] PalestranteDTO palestranteDTO)
         {
             try

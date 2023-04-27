@@ -17,8 +17,16 @@ namespace ProAgil.Api.Controllers.Usuario
 {
     public partial class UserController : ControllerBase
     {
+        /// <summary>
+        /// Cria um novo usuário
+        /// </summary>
+        /// <param name="userDTO">Informações do novo usuário</param>
+        /// <returns><see cref="UserDTO"/>Retorna o novo usuário criado</returns>
         [HttpPost("Register")]
         [AllowAnonymous]
+        [ProducesResponseType(typeof(UserDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]        
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<IActionResult> Post([FromBody] UserDTO userDTO)
         {
             try
@@ -38,8 +46,17 @@ namespace ProAgil.Api.Controllers.Usuario
             }
         }
 
+        /// <summary>
+        /// Realiza o Login de um usuário
+        /// </summary>
+        /// <param name="userLoginDTO">Informações de Login</param>
+        /// <returns><see cref="UserDTO"/>Retorna o usuário logado</returns>
         [HttpPost("Login")]
         [AllowAnonymous]
+        [ProducesResponseType(typeof(UserDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<IActionResult> Login([FromBody] UserLoginDTO userLoginDTO)
         {
             try

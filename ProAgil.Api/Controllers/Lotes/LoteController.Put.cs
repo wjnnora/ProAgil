@@ -9,7 +9,18 @@ namespace ProAgil.Api.Controllers.Lotes
 {
     public partial class LoteController : ControllerBase
     {
+        /// <summary>
+        /// Atualiza as informações de um lote
+        /// </summary>
+        /// <param name="id">Id do lote a ser atualizado</param>
+        /// <param name="loteDTO">Informações de atualização do lote</param>
+        /// <returns><see cref="LoteDTO"/>Retorna o lote atualizado</returns>
         [HttpPut("{id}")]
+        [ProducesResponseType(typeof(LoteDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<IActionResult> Put([FromRoute] int id, [FromBody] LoteDTO loteDTO)
         {
             try

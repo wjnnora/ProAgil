@@ -23,7 +23,15 @@ namespace ProAgil.Api.Controllers.RedesSociais
             _redeSocialRepository = redeSocialRepository;
         }
 
+        /// <summary>
+        /// Retorna todas as Redes Sociais cadastradas
+        /// </summary>
+        /// <returns><see cref="RedeSocialDTO"/></returns>
         [HttpGet]
+        [ProducesResponseType(typeof(RedeSocialDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]        
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<IActionResult> Get()
         {
             try
@@ -39,7 +47,17 @@ namespace ProAgil.Api.Controllers.RedesSociais
             }
         }
 
+        /// <summary>
+        /// Retorna uma Rede Social
+        /// </summary>
+        /// <param name="id">Id da Rede Social</param>
+        /// <returns><see cref="RedeSocialDTO"/>Retorna a Rede Social do Id informado</returns>
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(RedeSocialDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
             try
@@ -59,7 +77,17 @@ namespace ProAgil.Api.Controllers.RedesSociais
             }
         }
 
+        /// <summary>
+        /// Retorna uma Rede Social
+        /// </summary>
+        /// <param name="nome">Nome da Rede Social</param>
+        /// <returns><see cref="RedeSocialDTO"/>Retorna a Rede Social com o nome informado</returns>
         [HttpGet("getByName/{nome}")]
+        [ProducesResponseType(typeof(RedeSocialDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<IActionResult> Get([FromRoute] string nome)
         {
             try

@@ -7,7 +7,17 @@ namespace ProAgil.Api.Controllers.RedesSociais
 {
     public partial class RedeSocialController : ControllerBase
     {
+        /// <summary>
+        /// Deleta uma rede social
+        /// </summary>
+        /// <param name="id">Id da Rede Social</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             try

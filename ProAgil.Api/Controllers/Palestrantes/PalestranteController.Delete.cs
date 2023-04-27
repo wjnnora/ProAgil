@@ -7,7 +7,17 @@ namespace ProAgil.Api.Controllers.Palestrantes
 {
     public partial class PalestranteController : ControllerBase
     {
+        /// <summary>
+        /// Deleta um palestrante
+        /// </summary>
+        /// <param name="id">Id do palestrante</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             try
