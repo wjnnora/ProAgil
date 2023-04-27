@@ -1,13 +1,14 @@
 using System;
 using System.IO;
 using System.Text;
-using ProAgil.Domain.Identity;
+using System.Reflection;
+using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.AspNetCore.Authorization;
@@ -17,9 +18,10 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using ProAgil.Repository.Interfaces;
-using System.Reflection;
-using ProAgil.Repository.Repositories;
+
+using ProAgil.Domain.Identity;
 using ProAgil.Repository.Context;
+using ProAgil.Repository.Repositories;
 
 namespace ProAgil.Api
 {
@@ -52,6 +54,36 @@ namespace ProAgil.Api
             {
                 var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 opt.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
+                opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 
+                      Enter 'Bearer' [space] and then your token in the text input below.
+                      \r\n\r\nExample: 'Bearer 12345abcdef'",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+                opt.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                  {
+                    {
+                      new OpenApiSecurityScheme
+                      {
+                        Reference = new OpenApiReference
+                          {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                          },
+                          Scheme = "oauth2",
+                          Name = "Bearer",
+                          In = ParameterLocation.Header,
+
+                        },
+                        new List<string>()
+                      }
+                    });
             });
 
             builder = new IdentityBuilder(builder.UserType, typeof(Role), builder.Services);
