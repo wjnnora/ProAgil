@@ -3,17 +3,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ProAgil.Domain;
+using ProAgil.Repository.Context;
 using ProAgil.Repository.Interfaces;
 
-namespace ProAgil.Repository
+namespace ProAgil.Repository.Repositories
 {
     public class PalestranteRepository : GenericRepository<Palestrante>, IPalestranteRepository
     {
-        public PalestranteRepository(ProAgilContext context): base(context) { }
-        
+        public PalestranteRepository(ProAgilContext context) : base(context) { }
+
         public async Task<IEnumerable<Palestrante>> GetAllPalestrantesAsync()
         {
-            IQueryable<Palestrante> query = _context.Palestrantes                
+            IQueryable<Palestrante> query = _context.Palestrantes
                 .Include(rs => rs.RedesSociais);
 
             return await query.AsSplitQuery().ToArrayAsync();
@@ -21,7 +22,7 @@ namespace ProAgil.Repository
 
         public async Task<Palestrante> GetPalestranteByIdAsync(int id)
         {
-            IQueryable<Palestrante> query = _context.Palestrantes                
+            IQueryable<Palestrante> query = _context.Palestrantes
                 .Include(rs => rs.RedesSociais);
 
             return await query.AsSplitQuery().FirstOrDefaultAsync(x => x.Id == id);
@@ -29,10 +30,10 @@ namespace ProAgil.Repository
 
         public async Task<Palestrante> GetPalestranteByNomeAsync(string nome)
         {
-            IQueryable<Palestrante> query = _context.Palestrantes                
+            IQueryable<Palestrante> query = _context.Palestrantes
                 .Include(rs => rs.RedesSociais);
 
             return await query.AsSplitQuery().FirstOrDefaultAsync(x => x.Nome.ToLower().Contains(nome.ToLower()));
-        }        
+        }
     }
 }

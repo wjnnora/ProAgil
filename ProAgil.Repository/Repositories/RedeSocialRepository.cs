@@ -3,20 +3,21 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ProAgil.Domain;
+using ProAgil.Repository.Context;
 using ProAgil.Repository.Interfaces;
 
-namespace ProAgil.Repository
+namespace ProAgil.Repository.Repositories
 {
-    public class RedesSociaisRepository: GenericRepository<RedeSocial>, IRedesSociaisRepository
+    public class RedesSociaisRepository : GenericRepository<RedeSocial>, IRedesSociaisRepository
     {
-        public RedesSociaisRepository(ProAgilContext context): base(context) { }
+        public RedesSociaisRepository(ProAgilContext context) : base(context) { }
 
         public async Task<IEnumerable<RedeSocial>> GetAllRedesSociaisAsync()
         {
             IQueryable<RedeSocial> query = _context.RedesSociais;
 
             return await query.OrderBy(x => x.Nome).ToArrayAsync();
-        }        
+        }
 
         public async Task<RedeSocial> GetRedeSocialByIdAsync(int id)
         {

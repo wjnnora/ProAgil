@@ -3,14 +3,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ProAgil.Domain;
+using ProAgil.Repository.Context;
 using ProAgil.Repository.Interfaces;
 
-namespace ProAgil.Repository
+namespace ProAgil.Repository.Repositories
 {
     public class LoteRepository : GenericRepository<Lote>, ILoteRepository
     {
-        public LoteRepository(ProAgilContext context): base(context) { }
-        
+        public LoteRepository(ProAgilContext context) : base(context) { }
+
         public async Task<IEnumerable<Lote>> GetAllLotesAsync()
         {
             IQueryable<Lote> query = _context.Lotes;

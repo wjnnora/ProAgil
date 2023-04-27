@@ -16,10 +16,10 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-
-using ProAgil.Repository;
 using ProAgil.Repository.Interfaces;
 using System.Reflection;
+using ProAgil.Repository.Repositories;
+using ProAgil.Repository.Context;
 
 namespace ProAgil.Api
 {
@@ -35,7 +35,7 @@ namespace ProAgil.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {                        
-            services.AddDbContext<ProAgilContext>(opt => opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<ProAgilContext>();
 
             IdentityBuilder builder = services.AddIdentityCore<User>(opt =>
             {

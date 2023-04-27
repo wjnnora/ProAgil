@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using ProAgil.Repository.Context;
 using ProAgil.Repository.Interfaces;
 
-namespace ProAgil.Repository
+namespace ProAgil.Repository.Repositories
 {
-    public abstract class GenericRepository<T> : IGenericRepository<T> where T: class
+    public abstract class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         protected readonly ProAgilContext _context;
         public GenericRepository(ProAgilContext context)
@@ -40,7 +41,7 @@ namespace ProAgil.Repository
             _context.Set<T>().Attach(Entity);
             _context.Entry(Entity).State = EntityState.Deleted;
             return await _context.SaveChangesAsync() > 0;
-            
+
         }
 
         public async Task<bool> DeleteRange(List<T> Entity)
@@ -48,7 +49,7 @@ namespace ProAgil.Repository
             _context.Set<List<T>>().Attach(Entity);
             _context.Entry(Entity).State = EntityState.Deleted;
             return await _context.SaveChangesAsync() > 0;
-            
+
         }
 
         /// <summary>
@@ -64,6 +65,6 @@ namespace ProAgil.Repository
             _context.Entry(Entity).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return Entity;
-        }     
+        }
     }
 }
