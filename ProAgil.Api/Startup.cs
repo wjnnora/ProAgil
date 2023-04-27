@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 using ProAgil.Repository;
 using ProAgil.Repository.Interfaces;
+using System.Reflection;
 
 namespace ProAgil.Api
 {
@@ -47,7 +48,11 @@ namespace ProAgil.Api
 
             // Swagger configuration
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(opt => 
+            {
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                opt.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+            });
 
             builder = new IdentityBuilder(builder.UserType, typeof(Role), builder.Services);
             builder.AddEntityFrameworkStores<ProAgilContext>();
